@@ -9,12 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqTemplateConfiguration {
 
-    @Bean
-    public RabbitTemplate rabbitTemplate(
-            ConnectionFactory connectionFactory, MessageConverter jsonMessageConverter) {
-        var rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter);
-        return rabbitTemplate;
-    }
-
+  @Bean
+  public RabbitTemplate rabbitTemplate(
+      ConnectionFactory connectionFactory, MessageConverter jsonMessageConverter) {
+    var rabbitTemplate = new RabbitTemplate(connectionFactory);
+    rabbitTemplate.setMessageConverter(jsonMessageConverter);
+    return rabbitTemplate;
+  }
 }

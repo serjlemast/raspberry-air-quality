@@ -9,6 +9,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 @Configuration
 public class AsyncSchedulingConfig implements SchedulingConfigurer {
+
   @Bean
   public Executor taskExecutor() {
     return Executors.newScheduledThreadPool(50);
