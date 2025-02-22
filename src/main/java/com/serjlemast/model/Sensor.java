@@ -1,3 +1,3 @@
-package com.raspberry.air.quality.model;
+package com.serjlemast.model;
 
 public record Sensor(String sensorId, double temperature) {}

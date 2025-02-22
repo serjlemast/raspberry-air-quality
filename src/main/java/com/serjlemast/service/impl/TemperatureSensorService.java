@@ -1,9 +1,9 @@
-package com.raspberry.air.quality.service.impl;
+package com.serjlemast.service.impl;
 
-import com.raspberry.air.quality.model.Sensor;
-import com.raspberry.air.quality.model.SensorData;
-import com.raspberry.air.quality.model.SensorType;
-import com.raspberry.air.quality.service.SensorService;
+import com.serjlemast.model.Sensor;
+import com.serjlemast.model.SensorData;
+import com.serjlemast.model.SensorType;
+import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;

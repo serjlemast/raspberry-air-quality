@@ -1,7 +1,7 @@
-package com.raspberry.air.quality.scheduler;
+package com.serjlemast.scheduler;
 
-import com.raspberry.air.quality.publisher.RabbitMqPublisher;
-import com.raspberry.air.quality.service.SensorService;
+import com.serjlemast.publisher.RabbitMqPublisher;
+import com.serjlemast.service.SensorService;
 import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
-  @Scheduled(cron = "*/5 * * * * *")
+  @Scheduled(cron = "${scheduled.cron}")
   public void process() {
     var timestamp = LocalTime.now();
     var threadName = Thread.currentThread().getName();

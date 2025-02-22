@@ -11,16 +11,18 @@
 Add rabbitMQ properties to `.env` file:
 
 ```
-RABBITMQ_HOST=cow.rmq2.cloudamqp.com
-RABBITMQ_PORT=5672
-RABBITMQ_USERNAME=......
-RABBITMQ_PASSWORD=........
-RABBITMQ_VIRTUAL_HOST=......
+APP_SERVICE_RABBITMQ_HOST=cow.rmq2.cloudamqp.com
+APP_SERVICE_RABBITMQ_PORT=5672
+APP_SERVICE_RABBITMQ_USERNAME=......
+APP_SERVICE_RABBITMQ_PASSWORD=........
+APP_SERVICE_RABBITMQ_VIRTUAL_HOST=......
 
-RABBITMQ_QUEUE=air-quality-queue (by default)
-RABBITMQ_QUEUE_TTL=60000 (60 sec by defauult)
-RABBITMQ_EXCHANGE=air-quality-exchange (by default)
-RABBITMQ_ROUTING_KEY=air-quality-routing-key (by default)
+APP_SERVICE_RABBITMQ_QUEUE=air-quality-queue (by default)
+APP_SERVICE_RABBITMQ_QUEUE_TTL=60000 (60 sec by defauult)
+APP_SERVICE_RABBITMQ_EXCHANGE=air-quality-exchange (by default)
+APP_SERVICE_RABBITMQ_ROUTING_KEY=air-quality-routing-key (by default)
+
+APP_SERVICE_CRONE=*/5 * * * * * (run scheduler every 5 sec by default)
 ```
 
 Note: for CloudAMQP RabbitMQ provider `RABBITMQ_VIRTUAL_HOST` is `RABBITMQ_USERNAME`

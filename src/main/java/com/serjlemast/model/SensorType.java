@@ -1,4 +1,4 @@
-package com.raspberry.air.quality.model;
+package com.serjlemast.model;
 
 public enum SensorType {
   TEMPERATURE,

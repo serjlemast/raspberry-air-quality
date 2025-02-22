@@ -1,4 +1,4 @@
-package com.raspberry.air.quality.configuration;
+package com.serjlemast.configuration;
 
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

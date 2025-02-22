@@ -1,4 +1,4 @@
-package com.raspberry.air.quality.configuration;
+package com.serjlemast.configuration;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

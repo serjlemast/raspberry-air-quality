@@ -1,4 +1,4 @@
-package com.raspberry.air.quality.model;
+package com.serjlemast.model;
 
 import java.time.LocalDateTime;
 import java.util.List;

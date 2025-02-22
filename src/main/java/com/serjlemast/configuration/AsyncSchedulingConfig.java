@@ -1,4 +1,4 @@
-package com.raspberry.air.quality.configuration;
+package com.serjlemast.configuration;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

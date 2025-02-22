@@ -1,4 +1,4 @@
-package com.raspberry.air.quality;
+package com.serjlemast;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.test.context.SpringRabbitTest;

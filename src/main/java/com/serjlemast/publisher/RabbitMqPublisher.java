@@ -1,6 +1,6 @@
-package com.raspberry.air.quality.publisher;
+package com.serjlemast.publisher;
 
-import com.raspberry.air.quality.model.SensorData;
+import com.serjlemast.model.SensorData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
