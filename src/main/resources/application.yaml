@@ -2,6 +2,9 @@ spring:
   application:
     name: raspberry-air-quality
 
+  config:
+    import: optional:file:.env[.properties]
+
   threads:
     virtual:
       enabled: true
@@ -13,5 +16,6 @@ app:
     host: ${RABBITMQ_HOST:localhost}
     virtualhost: ${RABBITMQ_VIRTUAL_HOST}
     queue: ${RABBITMQ_QUEUE:air-quality-queue}
+    queue-ttl: ${RABBITMQ_QUEUE_TTL:60000}
     exchange: ${RABBITMQ_EXCHANGE:air-quality-exchange}
     routing-key: ${RABBITMQ_ROUTING_KEY:air-quality-routing-key}

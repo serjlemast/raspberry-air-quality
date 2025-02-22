@@ -13,6 +13,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqQueueConfiguration {
 
+  /*
+   * TTL in milliseconds (e.g., 60 seconds)
+   */
+  @Value("${app.rabbitmq.queue-ttl:60000}")
+  private Integer ttlInMillis;
+
   @Value("${app.rabbitmq.queue}")
   private String queue;
 
@@ -32,7 +38,7 @@ public class RabbitMqQueueConfiguration {
      *
      * A message that has been in the queue for longer than the configured TTL is said to be expired.
      */
-    return QueueBuilder.durable(queue).ttl(2000).build();
+    return QueueBuilder.durable(queue).ttl(ttlInMillis).build();
   }
 
   @Bean

@@ -16,6 +16,11 @@ RABBITMQ_PORT=5672
 RABBITMQ_USERNAME=......
 RABBITMQ_PASSWORD=........
 RABBITMQ_VIRTUAL_HOST=......
+
+RABBITMQ_QUEUE=air-quality-queue (by default)
+RABBITMQ_QUEUE_TTL=60000 (60 sec by defauult)
+RABBITMQ_EXCHANGE=air-quality-exchange (by default)
+RABBITMQ_ROUTING_KEY=air-quality-routing-key (by default)
 ```
 
 Note: for CloudAMQP RabbitMQ provider `RABBITMQ_VIRTUAL_HOST` is `RABBITMQ_USERNAME`
