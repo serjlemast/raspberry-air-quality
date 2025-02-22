@@ -1,10 +1,10 @@
-package org.example.raspberryairquality;
+package com.raspberry.air.quality;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RaspberryAirQualityApplicationTests {
+class RunApplicationTests {
 
     @Test
     void contextLoads() {

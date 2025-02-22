@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: raspberry-air-quality
+
+  threads:
+    virtual:
+      enabled: true
+app:
+  rabbitmq:
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    port: ${RABBITMQ_PORT:5672}
+    host: ${RABBITMQ_HOST:localhost}
+    virtualhost: ${RABBITMQ_VIRTUAL_HOST}
+    queue: ${RABBITMQ_QUEUE:air-quality-queue}
+    exchange: ${RABBITMQ_EXCHANGE:air-quality-exchange}
+    routing-key: ${RABBITMQ_ROUTING_KEY:air-quality-routing-key}

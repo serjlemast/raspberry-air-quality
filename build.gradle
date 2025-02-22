@@ -1,16 +1,15 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.2'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id "com.github.ben-manes.versions" version "${benManesDependencyVersion}"
 }
 
-group = 'org.example'
-version = '0.0.1-SNAPSHOT'
+group = "${buildGroup}"
+version = "${buildVersion}"
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
-    }
+    sourceCompatibility = "${javaVersion}"
 }
 
 configurations {
@@ -25,6 +24,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

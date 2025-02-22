@@ -1,13 +1,13 @@
-package org.example.raspberryairquality;
+package com.raspberry.air.quality;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RaspberryAirQualityApplication {
+public class RunApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RaspberryAirQualityApplication.class, args);
+        SpringApplication.run(RunApplication.class, args);
     }
 
 }
