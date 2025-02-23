@@ -1,8 +1,9 @@
 package com.serjlemast.scheduler;
 
+import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,18 +20,16 @@ public class SchedulerProcessor {
 
   @Scheduled(cron = "${scheduled.cron}")
   public void process() {
-    var timestamp = LocalTime.now();
+    var timestamp = LocalDateTime.now();
     var threadName = Thread.currentThread().getName();
     log.info("Starting sensor data processing at {} on thread: {}", timestamp, threadName);
 
-    sensorServices.forEach(
-        service ->
-            wrapper(
-                () -> {
-                  var data = service.readSensors();
-                  log.debug("Publishing data: {}", data);
-                  publisher.publish(data);
-                }));
+    wrapper(
+        () -> {
+          var sensors = sensorServices.stream().map(SensorService::readSensors).toList();
+          var event = new SensorDataEvent(timestamp, sensors);
+          publisher.publish(event);
+        });
   }
 
   private void wrapper(Runnable r) {

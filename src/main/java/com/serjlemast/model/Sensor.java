@@ -1,3 +1,3 @@
 package com.serjlemast.model;
 
-public record Sensor(String sensorId, double temperature) {}
+public record Sensor(String sensorId, double data) {}
