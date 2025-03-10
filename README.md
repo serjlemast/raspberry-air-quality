@@ -60,6 +60,26 @@ spring.rabbitmq.password=........
 spring.rabbitmq.port=5672
 ```
 
+### IDE setup
+
+1. Add configuration IDE
+
+Edit configurations >  Run / Debug > Remote > Remote Debugging or Debugging
+
+Debug mode: `Attach to remote JVM`
+
+HOST: `192.168.1.77`
+PORT: `5005`
+
+Command line arguments for remote JVM: `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005`
+User module classpath: `raspberry-air-quality.main`
+
+2. Run java app:
+
+```
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar build/libs/spring-boot-application.jar
+```
+
 #### Java code style
 
 Java code style refers to the conventions and guidelines that developers follow when writing Java code to ensure
