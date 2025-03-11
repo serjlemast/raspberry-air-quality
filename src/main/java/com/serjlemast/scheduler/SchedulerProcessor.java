@@ -24,8 +24,6 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
-  private final Context pi4j = Pi4J.newAutoContext();
-
   @Scheduled(cron = "${scheduled.cron}")
   public void process() {
 
