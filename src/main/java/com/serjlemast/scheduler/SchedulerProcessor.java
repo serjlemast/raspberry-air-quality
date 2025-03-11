@@ -10,7 +10,6 @@ import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -67,12 +66,11 @@ public class SchedulerProcessor {
 
     digitalOutput32.addListener(
         e -> {
-          console.println("Button was pressed for the" + e.toString());
+          log.info("test  {}", e.toString());
         });
 
-
     // OPTIONAL: print the registry
-//    PrintInfo.printRegistry(console, pi4j);
+    //    PrintInfo.printRegistry(console, pi4j);
 
     //    while (pressCount < 5) {
     //      if (led.state() == DigitalState.HIGH) {
