@@ -33,6 +33,11 @@ dependencies {
     implementation 'com.pi4j:pi4j-plugin-raspberrypi:2.8.0'
     // https://mvnrepository.com/artifact/com.pi4j/pi4j-plugin-pigpio
     implementation 'com.pi4j:pi4j-plugin-pigpio:2.8.0'
+    // https://mvnrepository.com/artifact/com.pi4j/pi4j-plugin-linuxfs
+    implementation 'com.pi4j:pi4j-plugin-linuxfs:2.8.0'
+    // https://mvnrepository.com/artifact/com.pi4j/pi4j-library-linuxfs
+    implementation 'com.pi4j:pi4j-library-linuxfs:2.8.0'
+
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
