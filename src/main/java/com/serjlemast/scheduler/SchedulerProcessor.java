@@ -4,6 +4,7 @@ import com.pi4j.Pi4J;
 import com.pi4j.boardinfo.util.BoardInfoHelper;
 import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.DigitalInput;
+import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.platform.Platforms;
 import com.pi4j.util.Console;
 import com.serjlemast.model.SensorDataEvent;
@@ -11,7 +12,9 @@ import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,7 +28,9 @@ public class SchedulerProcessor {
   private final List<SensorService> sensorServices;
 
   private final  Context pi4j = Pi4J.newAutoContext();
+  private final  DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(32);
 
+  @SneakyThrows
   @Scheduled(cron = "${scheduled.cron}")
   public void process() {
 
@@ -59,22 +64,17 @@ public class SchedulerProcessor {
     console.println("Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
 
     // Here we will create the I/O interface for a LED with minimal code.
-    var led = pi4j.digitalOutput().create(32);
 
 
-    // The button needs a bit more configuration, so we use a config builder.
-    var buttonConfig = DigitalInput.newConfigBuilder(pi4j)
-            .id("sensor")
-            .name("Temp")
-//            .address(PIN_BUTTON)
-//            .pull(PullResistance.PULL_DOWN)
-            .debounce(3000L);
-    var button = pi4j.create(buttonConfig);
-    button.addListener(e -> {
+
+    digitalOutput32.addListener(e -> {
 
         console.println("Button was pressed for the " + "th time: " + e);
 
     });
+
+
+    TimeUnit.SECONDS.sleep(5000);
 
     // OPTIONAL: print the registry
     PrintInfo.printRegistry(console, pi4j);
