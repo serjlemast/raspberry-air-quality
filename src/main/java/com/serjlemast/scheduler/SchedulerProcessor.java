@@ -95,7 +95,8 @@ public class SchedulerProcessor {
     console.println("Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
 
     // Here we will create the I/O interface for a LED with minimal code.
-    var led = pi4j.digitalOutput().create(7);
+    var led = pi4j.digitalOutput().create(17);
+
 
     // The button needs a bit more configuration, so we use a config builder.
     var buttonConfig = DigitalInput.newConfigBuilder(pi4j)
