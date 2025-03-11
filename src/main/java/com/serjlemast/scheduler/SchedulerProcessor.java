@@ -24,6 +24,8 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
+  private final  Context pi4j = Pi4J.newAutoContext();
+
   @Scheduled(cron = "${scheduled.cron}")
   public void process() {
 
@@ -34,42 +36,6 @@ public class SchedulerProcessor {
     // Print program title/header
     console.title("<-- The Pi4J Project -->", "Minimal Example project");
 
-    // ************************************************************
-    //
-    // WELCOME TO Pi4J:
-    //
-    // Here we will use this getting started example to
-    // demonstrate the basic fundamentals of the Pi4J library.
-    //
-    // This example is to introduce you to the boilerplate
-    // logic and concepts required for all applications using
-    // the Pi4J library.  This example will do use some basic I/O.
-    // Check the pi4j-examples project to learn about all the I/O
-    // functions of Pi4J.
-    //
-    // ************************************************************
-
-    // ------------------------------------------------------------
-    // Initialize the Pi4J Runtime Context
-    // ------------------------------------------------------------
-    // Before you can use Pi4J you must initialize a new runtime
-    // context.
-    //
-    // The 'Pi4J' static class includes a few helper context
-    // creators for the most common use cases.  The 'newAutoContext()'
-    // method will automatically load all available Pi4J
-    // extensions found in the application's classpath which
-    // may include 'Platforms' and 'I/O Providers'
-    var pi4j = Pi4J.newAutoContext();
-
-    // ------------------------------------------------------------
-    // Output Pi4J Context information
-    // ------------------------------------------------------------
-    // The created Pi4J Context initializes platforms, providers
-    // and the I/O registry. To help you to better understand this
-    // approach, we print out the info of these. This can be removed
-    // from your own application.
-    // OPTIONAL
     PrintInfo.printLoadedPlatforms(console, pi4j);
     PrintInfo.printDefaultPlatform(console, pi4j);
     PrintInfo.printProviders(console, pi4j);
