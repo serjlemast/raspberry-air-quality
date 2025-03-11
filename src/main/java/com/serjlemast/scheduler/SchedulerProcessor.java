@@ -3,9 +3,7 @@ package com.serjlemast.scheduler;
 import com.pi4j.Pi4J;
 import com.pi4j.boardinfo.util.BoardInfoHelper;
 import com.pi4j.context.Context;
-import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalOutput;
-import com.pi4j.platform.Platforms;
 import com.pi4j.util.Console;
 import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
@@ -27,8 +25,8 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
-  private final  Context pi4j = Pi4J.newAutoContext();
-  private final  DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(32);
+  private final Context pi4j = Pi4J.newAutoContext();
+  private final DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(32);
 
   @SneakyThrows
   @Scheduled(cron = "${scheduled.cron}")
@@ -58,37 +56,34 @@ public class SchedulerProcessor {
     // This info is also available directly from the BoardInfoHelper,
     // and with some additional realtime data.
     console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
-    console.println("Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
+    console.println(
+        "Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
     console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
     console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
-    console.println("Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
+    console.println(
+        "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
 
     // Here we will create the I/O interface for a LED with minimal code.
 
+    digitalOutput32.addListener(
+        e -> {
+          console.println("Button was pressed for the" + e.toString());
+        });
 
-
-    digitalOutput32.addListener(e -> {
-
-        console.println("Button was pressed for the " + "th time: " + e);
-
-    });
-
-
-    TimeUnit.SECONDS.sleep(5000);
 
     // OPTIONAL: print the registry
-    PrintInfo.printRegistry(console, pi4j);
+//    PrintInfo.printRegistry(console, pi4j);
 
-//    while (pressCount < 5) {
-//      if (led.state() == DigitalState.HIGH) {
-//        console.println("LED low");
-//        led.low();
-//      } else {
-//        console.println("LED high");
-//        led.high();
-//      }
-//      Thread.sleep(500 / (pressCount + 1));
-//    }
+    //    while (pressCount < 5) {
+    //      if (led.state() == DigitalState.HIGH) {
+    //        console.println("LED low");
+    //        led.low();
+    //      } else {
+    //        console.println("LED high");
+    //        led.high();
+    //      }
+    //      Thread.sleep(500 / (pressCount + 1));
+    //    }
 
     var timestamp = LocalDateTime.now();
     var threadName = Thread.currentThread().getName();
