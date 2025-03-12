@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class SchedulerProcessor {
 
   private final RabbitMqPublisher publisher;
@@ -27,47 +26,58 @@ public class SchedulerProcessor {
   private final Context pi4j = Pi4J.newAutoContext();
   private final DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(32);
 
-  @SneakyThrows
+    public SchedulerProcessor(RabbitMqPublisher publisher, List<SensorService> sensorServices) {
+        this.publisher = publisher;
+        this.sensorServices = sensorServices;
+
+      digitalOutput32.addListener(
+              e -> {
+                log.info("test  {}", e.toString());
+              });
+    }
+
+
+    @SneakyThrows
   @Scheduled(cron = "${scheduled.cron}")
   public void process() {
 
-    // Create Pi4J console wrapper/helper
-    // (This is a utility class to abstract some of the boilerplate stdin/stdout code)
-    final var console = new Console();
-
-    // Print program title/header
-    console.title("<-- The Pi4J Project -->", "Minimal Example project");
-
-    PrintInfo.printLoadedPlatforms(console, pi4j);
-    PrintInfo.printDefaultPlatform(console, pi4j);
-    PrintInfo.printProviders(console, pi4j);
-
-    // ------------------------------------------------------------
-    // Output Pi4J Board information
-    // ------------------------------------------------------------
-    // When the Pi4J Context is initialized, a board detection is
-    // performed. You can use this info in case you need board-specific
-    // functionality.
-    // OPTIONAL
-    console.println("Board model: " + pi4j.boardInfo().getBoardModel().getLabel());
-    console.println("Operating system: " + pi4j.boardInfo().getOperatingSystem());
-    console.println("Java versions: " + pi4j.boardInfo().getJavaInfo());
-    // This info is also available directly from the BoardInfoHelper,
-    // and with some additional realtime data.
-    console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
-    console.println(
-        "Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
-    console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
-    console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
-    console.println(
-        "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
+//    // Create Pi4J console wrapper/helper
+//    // (This is a utility class to abstract some of the boilerplate stdin/stdout code)
+//    final var console = new Console();
+//
+//    // Print program title/header
+//    console.title("<-- The Pi4J Project -->", "Minimal Example project");
+//
+//    PrintInfo.printLoadedPlatforms(console, pi4j);
+//    PrintInfo.printDefaultPlatform(console, pi4j);
+//    PrintInfo.printProviders(console, pi4j);
+//
+//    // ------------------------------------------------------------
+//    // Output Pi4J Board information
+//    // ------------------------------------------------------------
+//    // When the Pi4J Context is initialized, a board detection is
+//    // performed. You can use this info in case you need board-specific
+//    // functionality.
+//    // OPTIONAL
+//    console.println("Board model: " + pi4j.boardInfo().getBoardModel().getLabel());
+//    console.println("Operating system: " + pi4j.boardInfo().getOperatingSystem());
+//    console.println("Java versions: " + pi4j.boardInfo().getJavaInfo());
+//    // This info is also available directly from the BoardInfoHelper,
+//    // and with some additional realtime data.
+//    console.println("Board model: " + BoardInfoHelper.current().getBoardModel().getLabel());
+//    console.println(
+//        "Raspberry Pi model with RP1 chip (Raspberry Pi 5): " + BoardInfoHelper.usesRP1());
+//    console.println("OS is 64-bit: " + BoardInfoHelper.is64bit());
+//    console.println("JVM memory used (MB): " + BoardInfoHelper.getJvmMemory().getUsedInMb());
+//    console.println(
+//        "Board temperature (°C): " + BoardInfoHelper.getBoardReading().getTemperatureInCelsius());
 
     // Here we will create the I/O interface for a LED with minimal code.
 
-    digitalOutput32.addListener(
-        e -> {
-          log.info("test  {}", e.toString());
-        });
+//    digitalOutput32.addListener(
+//        e -> {
+//          log.info("test  {}", e.toString());
+//        });
 
     // OPTIONAL: print the registry
     //    PrintInfo.printRegistry(console, pi4j);
@@ -85,7 +95,7 @@ public class SchedulerProcessor {
 
     var timestamp = LocalDateTime.now();
     var threadName = Thread.currentThread().getName();
-    log.info("Starting sensor data processing at {} on thread: {}", timestamp, threadName);
+//    log.info("Starting sensor data processing at {} on thread: {}", timestamp, threadName);
 
     wrapper(
         () -> {
