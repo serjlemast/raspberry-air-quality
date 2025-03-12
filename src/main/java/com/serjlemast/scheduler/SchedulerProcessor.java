@@ -6,6 +6,8 @@ import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalInputConfig;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalOutputConfig;
+import com.pi4j.io.gpio.digital.DigitalState;
+import com.pi4j.io.gpio.digital.PullResistance;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
@@ -36,7 +38,7 @@ public class SchedulerProcessor {
                 .id("DHT11_OUTPUT")
                 .name("DHT11 Output")
                 .address(GPIO_PIN_4)
-                .onState(com.pi4j.io.gpio.digital.DigitalState.HIGH)
+                .onState(DigitalState.HIGH)
                 .build());
 
     // Send signal to DHT11 sensor
@@ -64,26 +66,26 @@ public class SchedulerProcessor {
             DigitalInputConfig.newBuilder(pi4j)
                 .id("DHT11_INPUT")
                 .name("DHT11 Input")
-                .address(GPIO_PIN_4) // Same GPIO pin
-                //                .pull(PullResistance.OFF) // No pull-up or pull-down resistor
+                .address(GPIO_PIN_4)
+                .pull(PullResistance.PULL_UP)
                 .build());
     try {
       Thread.sleep(1);
     } catch (InterruptedException ignored) {
     }
     // Wait for response from DHT11 sensor
-    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
-    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
-    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+    while (input.state() == DigitalState.HIGH) {}
+    while (input.state() == DigitalState.LOW) {}
+    while (input.state() == DigitalState.HIGH) {}
 
     log.info(" >>> 3 Starting SchedulerProcessor, input.state() - {}", input.state());
 
     // Read 40 bits of data (Temperature and Humidity)
     int[] data = new int[40];
     for (int i = 0; i < 40; i++) {
-      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
+      while (input.state() == DigitalState.LOW) {}
       long startTime = System.nanoTime();
-      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+      while (input.state() == DigitalState.HIGH) {}
       long pulseTime = System.nanoTime() - startTime;
       data[i] = (pulseTime > 50000) ? 1 : 0; // 1 if pulse > 50ms, else 0
     }
@@ -104,11 +106,11 @@ public class SchedulerProcessor {
 
     int calculatedChecksum = humidityInt + humidityDec + temperatureInt + temperatureDec;
     if ((calculatedChecksum & 0xFF) == checksum) {
-      System.out.println("Data received successfully:");
-      System.out.println("Temperature: " + temperatureInt + "." + temperatureDec + "°C");
-      System.out.println("Humidity: " + humidityInt + "." + humidityDec + "%");
+      log.info("Data received successfully:");
+      log.info("Temperature: " + temperatureInt + "." + temperatureDec + "°C");
+      log.info("Humidity: " + humidityInt + "." + humidityDec + "%");
     } else {
-      System.err.println("Checksum error!");
+      log.error("Checksum error!");
     }
 
     // Shutdown Pi4J context
@@ -124,7 +126,6 @@ public class SchedulerProcessor {
     return value;
   }
 
-  //    @Scheduled(cron = "${scheduled.cron}")
   @Scheduled(cron = "*/10 * * * * *")
   public void process() {
 
