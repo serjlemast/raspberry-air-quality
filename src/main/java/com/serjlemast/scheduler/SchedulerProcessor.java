@@ -35,7 +35,7 @@ public class SchedulerProcessor {
 
   public void test() {
     Context pi4j = Pi4J.newAutoContext();
-    log.info("Starting SchedulerProcessor");
+    log.info(" >>> 1 Starting SchedulerProcessor");
     // Create digital output for controlling DHT11 sensor
     DigitalOutput output =
         pi4j.create(
@@ -59,6 +59,7 @@ public class SchedulerProcessor {
     }
     pi4j.shutdown();
 
+    log.info(" >>> 2 Starting SchedulerProcessor");
     pi4j = Pi4J.newAutoContext(); // Re-initialize Pi4J context
 
     // After sending, now switch to input to read data
@@ -76,6 +77,9 @@ public class SchedulerProcessor {
     while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
     while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
 
+
+    log.info(" >>> 3 Starting SchedulerProcessor");
+
     // Read 40 bits of data (Temperature and Humidity)
     int[] data = new int[40];
     for (int i = 0; i < 40; i++) {
@@ -92,6 +96,8 @@ public class SchedulerProcessor {
     int temperatureInt = bitsToByte(data, 16);
     int temperatureDec = bitsToByte(data, 24);
     int checksum = bitsToByte(data, 32);
+
+    log.info(" >>> 4 Starting SchedulerProcessor");
 
     int calculatedChecksum = humidityInt + humidityDec + temperatureInt + temperatureDec;
     if ((calculatedChecksum & 0xFF) == checksum) {
