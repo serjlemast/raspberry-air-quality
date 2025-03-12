@@ -7,6 +7,7 @@ import com.pi4j.io.gpio.digital.DigitalInputConfig;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalOutputConfig;
 import com.pi4j.io.gpio.digital.DigitalState;
+import com.pi4j.io.gpio.digital.PullResistance;
 import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
@@ -25,9 +26,9 @@ public class SchedulerProcessor {
   private final List<SensorService> sensorServices;
 
   private static final int GPIO_PIN = 4;
-//
-//  private Context pi4j = Pi4J.newAutoContext();
-  
+
+  //
+  //  private Context pi4j = Pi4J.newAutoContext();
 
   public SchedulerProcessor(RabbitMqPublisher publisher, List<SensorService> sensorServices) {
     this.publisher = publisher;
@@ -70,7 +71,7 @@ public class SchedulerProcessor {
             .id("DHT11_INPUT")
             .name("DHT11 Input")
             .address(GPIO_PIN)
-            .pull(null)
+            .pull(PullResistance.OFF) // Set no
             .build();
     DigitalInput input = pi4j.create(inputConfig);
 
