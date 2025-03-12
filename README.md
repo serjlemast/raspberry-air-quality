@@ -80,6 +80,28 @@ User module classpath: `raspberry-air-quality.main`
 java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar build/libs/spring-boot-application.jar
 ```
 
+### Raspberry pi 4
+
+#### Raspberry Pi: Measure Humidity and Temperature with DHT11/DHT22
+
+link: https://tutorials-raspberrypi.com/raspberry-pi-measure-humidity-temperature-dht11-dht22/
+
+#### Raspberry Pi Humidity Software Installation
+
+First of all, some packages have to be installed:
+
+```
+sudo apt-get update
+sudo apt-get install build-essential python-dev python-openssl git
+```
+
+The library for the sensors can now be loaded. I use a ready-made library from Adafruit that supports various sensors
+
+```
+sudo pip3 install adafruit-circuitpython-dht
+sudo apt-get install libgpiod2
+```
+
 #### Java code style
 
 Java code style refers to the conventions and guidelines that developers follow when writing Java code to ensure
