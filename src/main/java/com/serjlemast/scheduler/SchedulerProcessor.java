@@ -148,7 +148,7 @@ public class SchedulerProcessor {
 
   @SneakyThrows
   //    @Scheduled(cron = "${scheduled.cron}")
-  @Scheduled(cron = "*/10 *  * * * *")
+  @Scheduled(cron = "*/10 * * * * *")
   public void process() {
 
     test();
