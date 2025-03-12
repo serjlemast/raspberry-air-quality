@@ -33,6 +33,8 @@ public class SchedulerProcessor {
   public SchedulerProcessor(RabbitMqPublisher publisher, List<SensorService> sensorServices) {
     this.publisher = publisher;
     this.sensorServices = sensorServices;
+
+    test();
   }
 
   public void test() {
@@ -123,7 +125,7 @@ public class SchedulerProcessor {
   @Scheduled(cron = "* */1 * * * *")
   public void process() {
 
-    test();
+//    test();
 
     // Initialize a HumiTempComponent with default values
     //        final var dht11 = new HumiTempComponent();
@@ -195,12 +197,12 @@ public class SchedulerProcessor {
     var threadName = Thread.currentThread().getName();
     //    log.info("Starting sensor data processing at {} on thread: {}", timestamp, threadName);
 
-    wrapper(
-        () -> {
-          var sensors = sensorServices.stream().map(SensorService::readSensors).toList();
-          var event = new SensorDataEvent(timestamp, sensors);
-          publisher.publish(event);
-        });
+//    wrapper(
+//        () -> {
+//          var sensors = sensorServices.stream().map(SensorService::readSensors).toList();
+//          var event = new SensorDataEvent(timestamp, sensors);
+//          publisher.publish(event);
+//        });
   }
 
   private void wrapper(Runnable r) {
