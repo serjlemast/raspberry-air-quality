@@ -2,6 +2,10 @@ package com.serjlemast.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serjlemast.model.Sensor;
+import com.serjlemast.model.SensorData;
+import com.serjlemast.model.SensorType;
+import com.serjlemast.service.SensorService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,13 +14,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class DHT11SensorService {
+public class DHT11_Gpio4_SensorService implements SensorService {
+
+  @Override
+  public Optional<SensorData> readSensors() {
+    Map<String, Object> data = getTemperatureAndHumidity();
+
+    if (data.containsKey("error")) {
+      return Optional.empty();
+    }
+
+    return Optional.of(
+        new SensorData(
+            SensorType.ALL,
+            List.of(
+                new Sensor(
+                    "temperature_celsius", (double) data.getOrDefault("temperature_celsius", 0.0)),
+                new Sensor(
+                    "temperature_fahrenheit",
+                    (double) data.getOrDefault("temperature_fahrenheit", 0.0)),
+                new Sensor("humidity", (double) data.getOrDefault("humidity", 0.0)))));
+  }
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 

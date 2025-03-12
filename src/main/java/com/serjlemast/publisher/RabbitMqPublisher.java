@@ -21,7 +21,7 @@ public class RabbitMqPublisher {
   private final RabbitTemplate template;
 
   public void publish(SensorDataEvent event) {
-//    log.info("Publishing data: {}", event);
+    log.info("Publishing data: {}", event);
     template.convertAndSend(exchange, routingKey, event);
   }
 }
