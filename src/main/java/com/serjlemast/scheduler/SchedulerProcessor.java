@@ -34,11 +34,9 @@ public class SchedulerProcessor {
   public SchedulerProcessor(RabbitMqPublisher publisher, List<SensorService> sensorServices) {
     this.publisher = publisher;
     this.sensorServices = sensorServices;
-
-    test();
   }
 
-  public static void test() {
+  public void test() {
     log.info("Starting SchedulerProcessor");
     // Create digital output for controlling DHT11 sensor
     DigitalOutput output =
@@ -121,7 +119,7 @@ public class SchedulerProcessor {
   @Scheduled(cron = "* */1 * * * *")
   public void process() {
 
-    //    test();
+    test();
 
     // Initialize a HumiTempComponent with default values
     //        final var dht11 = new HumiTempComponent();
