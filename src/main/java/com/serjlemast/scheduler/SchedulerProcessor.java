@@ -9,6 +9,7 @@ import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,6 +27,8 @@ public class SchedulerProcessor {
   private final Context pi4j = Pi4J.newAutoContext();
   private final DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(32);
 
+  private final List<String> list  = new ArrayList<>();
+
     public SchedulerProcessor(RabbitMqPublisher publisher, List<SensorService> sensorServices) {
         this.publisher = publisher;
         this.sensorServices = sensorServices;
@@ -33,6 +36,7 @@ public class SchedulerProcessor {
       digitalOutput32.addListener(
               e -> {
                 log.info("test  {}", e.toString());
+                list.add(e.toString());
               });
     }
 
@@ -40,6 +44,8 @@ public class SchedulerProcessor {
     @SneakyThrows
   @Scheduled(cron = "${scheduled.cron}")
   public void process() {
+
+      log.info("process start -{} " + list);
 
 //    // Create Pi4J console wrapper/helper
 //    // (This is a utility class to abstract some of the boilerplate stdin/stdout code)
