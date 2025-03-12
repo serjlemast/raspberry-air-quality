@@ -6,13 +6,11 @@ import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalInputConfig;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalOutputConfig;
-import com.pi4j.io.gpio.digital.PullResistance;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,14 +31,15 @@ public class SchedulerProcessor {
   //
   //  private Context pi4j = Pi4J.newAutoContext();
 
-  public SchedulerProcessor(RabbitMqPublisher publisher, List<SensorService> sensorServices,
-                            ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+  public SchedulerProcessor(
+      RabbitMqPublisher publisher,
+      List<SensorService> sensorServices,
+      ThreadPoolTaskExecutor threadPoolTaskExecutor) {
     this.publisher = publisher;
     this.sensorServices = sensorServices;
     this.threadPoolTaskExecutor = threadPoolTaskExecutor;
   }
 
-  @SneakyThrows
   public void test() {
     Context pi4j = Pi4J.newAutoContext();
     log.info(" >>> 1 Starting SchedulerProcessor");
@@ -69,7 +68,10 @@ public class SchedulerProcessor {
 
     log.info(" >>> 2 Starting SchedulerProcessor");
     pi4j = Pi4J.newAutoContext(); // Re-initialize Pi4J context
-
+    try {
+      Thread.sleep(1);
+    } catch (InterruptedException ignored) {
+    }
     // After sending, now switch to input to read data
     DigitalInput input =
         pi4j.create(
@@ -77,32 +79,41 @@ public class SchedulerProcessor {
                 .id("DHT11_INPUT")
                 .name("DHT11 Input")
                 .address(GPIO_PIN_4) // Same GPIO pin
-//                .pull(PullResistance.OFF) // No pull-up or pull-down resistor
+                //                .pull(PullResistance.OFF) // No pull-up or pull-down resistor
                 .build());
-
+    try {
+      Thread.sleep(1);
+    } catch (InterruptedException ignored) {
+    }
     // Wait for response from DHT11 sensor
-//    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
-//    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
-//    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
-
-
-
+    //    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+    //    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
+    //    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
 
     log.info(" >>> 3 Starting SchedulerProcessor, input.state() - {}", input.state());
 
     // Read 40 bits of data (Temperature and Humidity)
     int[] data = new int[40];
     for (int i = 0; i < 40; i++) {
-//      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
-      TimeUnit.MICROSECONDS.sleep(100);
+      //      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException ignored) {
+      }
       long startTime = System.nanoTime();
-      TimeUnit.MICROSECONDS.sleep(100);
-//      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException ignored) {
+      }
+      //      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
       long pulseTime = System.nanoTime() - startTime;
       data[i] = (pulseTime > 50000) ? 1 : 0; // 1 if pulse > 50ms, else 0
     }
 
-    log.info(" >>> 3.1 Starting SchedulerProcessor, input.state()- {}, data - {}",input.state(), Arrays.toString(data));
+    log.info(
+        " >>> 3.1 Starting SchedulerProcessor, input.state()- {}, data - {}",
+        input.state(),
+        Arrays.toString(data));
 
     // Decode the data
     int humidityInt = bitsToByte(data, 0);
@@ -136,7 +147,7 @@ public class SchedulerProcessor {
   }
 
   @SneakyThrows
-//    @Scheduled(cron = "${scheduled.cron}")
+  //    @Scheduled(cron = "${scheduled.cron}")
   @Scheduled(cron = "*/10 *  * * * *")
   public void process() {
 
