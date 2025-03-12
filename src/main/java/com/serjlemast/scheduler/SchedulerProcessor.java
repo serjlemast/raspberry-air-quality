@@ -30,7 +30,7 @@ public class SchedulerProcessor {
   private final Context pi4j = Pi4J.newAutoContext();
 
 
-  private final DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(5);
+  private final DigitalInput digitalOutput32 = pi4j.digitalInput().create(5);
 
   private final List<String> list  = new ArrayList<>();
 
