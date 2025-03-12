@@ -53,8 +53,18 @@ public class Gpio4Reader {
       }
 
       String jsonResponse = output.toString().trim();
-      if (jsonResponse.isEmpty() || jsonResponse.contains("A full buffer was not returned.")) {
-        log.warn("Empty response from Python script or full buffer was not returned");
+      if (jsonResponse.isEmpty()) {
+        log.warn("Empty response from Python script ");
+        return Optional.empty();
+      }
+
+      if (jsonResponse.contains("A full buffer was not returned")) {
+        log.warn("full buffer was not returned");
+        return Optional.empty();
+      }
+
+      if (jsonResponse.contains("Checksum did not validate")) {
+        log.warn("Checksum did not validate");
         return Optional.empty();
       }
 
