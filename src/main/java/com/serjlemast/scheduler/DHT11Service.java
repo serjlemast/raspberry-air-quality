@@ -4,7 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +19,15 @@ public class DHT11Service {
 
   public Map<String, Object> getTemperatureAndHumidity() {
     try {
+      // Извлечение скрипта из JAR в временную директорию
+      File tempScriptFile = extractPythonScript();
 
-      String jarPath =
-          DHT11Service.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-      File jarFile = new File(jarPath);
-      File scriptFile = new File(jarFile.getParent(), SCRIPT_NAME);
-
-      if (!scriptFile.exists()) {
-        return Map.of("error", "Python script not found: " + scriptFile.getAbsolutePath());
-      }
-
-      ProcessBuilder processBuilder = new ProcessBuilder("python3", scriptFile.getAbsolutePath());
+      // Запуск Python-скрипта через ProcessBuilder
+      ProcessBuilder processBuilder =
+          new ProcessBuilder("python3", tempScriptFile.getAbsolutePath());
       Process process = processBuilder.start();
 
+      // Чтение вывода скрипта
       BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
       StringBuilder output = new StringBuilder();
       String line;
@@ -45,7 +46,31 @@ public class DHT11Service {
 
     } catch (Exception e) {
       e.printStackTrace();
-      return Map.of("error", e.getMessage());
+      return Map.of("error", "Ошибка при выполнении скрипта");
     }
+  }
+
+  // Метод для извлечения скрипта Python из ресурсов
+  private File extractPythonScript() throws IOException {
+    // Читаем скрипт из ресурсов
+    InputStream inputStream = getClass().getClassLoader().getResourceAsStream(SCRIPT_NAME);
+    if (inputStream == null) {
+      throw new FileNotFoundException("Python script not found in resources: " + SCRIPT_NAME);
+    }
+
+    // Создаем временный файл
+    File tempScriptFile = File.createTempFile("dht11_reader", ".py");
+    tempScriptFile.deleteOnExit(); // Удалить файл по завершению
+
+    // Записываем содержимое скрипта в временный файл
+    try (OutputStream outputStream = new FileOutputStream(tempScriptFile)) {
+      byte[] buffer = new byte[1024];
+      int length;
+      while ((length = inputStream.read(buffer)) != -1) {
+        outputStream.write(buffer, 0, length);
+      }
+    }
+
+    return tempScriptFile;
   }
 }
