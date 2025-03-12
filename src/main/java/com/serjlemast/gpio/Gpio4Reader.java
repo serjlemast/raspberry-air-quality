@@ -68,6 +68,11 @@ public class Gpio4Reader {
         return Optional.empty();
       }
 
+      if (jsonResponse.contains("Received unplausible data")) {
+        log.warn("Received unplausible data. Try again.");
+        return Optional.empty();
+      }
+
       return Optional.ofNullable(objectMapper.readValue(jsonResponse, new TypeReference<>() {}));
     } catch (Exception e) {
       log.error(e.getMessage(), e);
