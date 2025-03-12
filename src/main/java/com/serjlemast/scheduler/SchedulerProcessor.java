@@ -11,33 +11,20 @@ import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class SchedulerProcessor {
 
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
   private static final int GPIO_PIN_4 = 4;
-
-  private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
-
-  //
-  //  private Context pi4j = Pi4J.newAutoContext();
-
-  public SchedulerProcessor(
-      RabbitMqPublisher publisher,
-      List<SensorService> sensorServices,
-      ThreadPoolTaskExecutor threadPoolTaskExecutor) {
-    this.publisher = publisher;
-    this.sensorServices = sensorServices;
-    this.threadPoolTaskExecutor = threadPoolTaskExecutor;
-  }
 
   public void test() {
     Context pi4j = Pi4J.newAutoContext();
