@@ -31,10 +31,5 @@ def read_dht11_data():
 
 # Вводим цикл для получения данных
 if __name__ == "__main__":
-    while True:
-        # Получаем данные и выводим их в JSON-формате
-        result = read_dht11_data()
-        print(result)
-
-        # Подождать перед следующим чтением
-        time.sleep(2.0)
+    result = read_dht11_data()
+    print(result)  # Этот результат будет захвачен и передан в Java
