@@ -8,7 +8,6 @@ import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalOutputConfig;
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.gpio.digital.PullResistance;
-import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
@@ -38,21 +37,20 @@ public class SchedulerProcessor {
   }
 
   public void test() {
+    /// Create Pi4J context
     Context pi4j = Pi4J.newAutoContext();
 
-    log.info("Requesting data from DHT11...");
+    // Create digital output for controlling DHT11 sensor
+    DigitalOutput output =
+        pi4j.create(
+            DigitalOutputConfig.newBuilder(pi4j)
+                .id("DHT11_OUTPUT")
+                .name("DHT11 Output")
+                .address(GPIO_PIN)
+                .onState(DigitalState.HIGH)
+                .build());
 
-    // Step 1: Set GPIO as output and send request signal
-    DigitalOutputConfig outputConfig =
-        DigitalOutputConfig.newBuilder(pi4j)
-            .id("DHT11_OUTPUT")
-            .name("DHT11 Output")
-            .address(GPIO_PIN)
-            .shutdown(DigitalState.LOW)
-            .initial(DigitalState.HIGH)
-            .build();
-    DigitalOutput output = pi4j.create(outputConfig);
-
+    // Send signal to DHT11 sensor
     output.low();
     try {
       Thread.sleep(18);
@@ -64,35 +62,32 @@ public class SchedulerProcessor {
     } catch (InterruptedException ignored) {
     }
 
-    // Step 2: Switch GPIO to input mode
-    pi4j.shutdown();
-    pi4j = Pi4J.newAutoContext();
+    // Create digital input for reading data from DHT11 sensor
+    DigitalInput input =
+        pi4j.create(
+            DigitalInputConfig.newBuilder(pi4j)
+                .id("DHT11_INPUT")
+                .name("DHT11 Input")
+                .address(GPIO_PIN)
+                .pull(PullResistance.OFF) // No pull-up or pull-down resistor
+                .build());
 
-    DigitalInputConfig inputConfig =
-        DigitalInputConfig.newBuilder(pi4j)
-            .id("DHT11_INPUT")
-            .name("DHT11 Input")
-            .address(GPIO_PIN)
-            .pull(PullResistance.OFF) // Set no
-            .build();
-    DigitalInput input = pi4j.create(inputConfig);
+    // Wait for response from DHT11 sensor
+    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
+    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
 
-    // Step 3: Wait for response
-    while (input.state() == DigitalState.HIGH) {}
-    while (input.state() == DigitalState.LOW) {}
-    while (input.state() == DigitalState.HIGH) {}
-
-    // Step 4: Read 40-bit data
+    // Read 40 bits of data (Temperature and Humidity)
     int[] data = new int[40];
     for (int i = 0; i < 40; i++) {
-      while (input.state() == DigitalState.LOW) {}
+      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
       long startTime = System.nanoTime();
-      while (input.state() == DigitalState.HIGH) {}
+      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
       long pulseTime = System.nanoTime() - startTime;
-      data[i] = (pulseTime > 50000) ? 1 : 0;
+      data[i] = (pulseTime > 50000) ? 1 : 0; // 1 if pulse > 50ms, else 0
     }
 
-    // Step 5: Decode data
+    // Decode the data
     int humidityInt = bitsToByte(data, 0);
     int humidityDec = bitsToByte(data, 8);
     int temperatureInt = bitsToByte(data, 16);
@@ -101,13 +96,14 @@ public class SchedulerProcessor {
 
     int calculatedChecksum = humidityInt + humidityDec + temperatureInt + temperatureDec;
     if ((calculatedChecksum & 0xFF) == checksum) {
-      log.info("Data received successfully:");
-      log.info("Temperature: " + temperatureInt + "." + temperatureDec + "°C");
-      log.info("Humidity: " + humidityInt + "." + humidityDec + "%");
+      System.out.println("✅ Data received successfully:");
+      System.out.println("🌡 Temperature: " + temperatureInt + "." + temperatureDec + "°C");
+      System.out.println("💧 Humidity: " + humidityInt + "." + humidityDec + "%");
     } else {
-      System.err.println("Checksum error!");
+      System.err.println("❌ Checksum error!");
     }
 
+    // Shutdown Pi4J context
     pi4j.shutdown();
   }
 
@@ -125,7 +121,7 @@ public class SchedulerProcessor {
   @Scheduled(cron = "* */1 * * * *")
   public void process() {
 
-//    test();
+    //    test();
 
     // Initialize a HumiTempComponent with default values
     //        final var dht11 = new HumiTempComponent();
@@ -197,12 +193,12 @@ public class SchedulerProcessor {
     var threadName = Thread.currentThread().getName();
     //    log.info("Starting sensor data processing at {} on thread: {}", timestamp, threadName);
 
-//    wrapper(
-//        () -> {
-//          var sensors = sensorServices.stream().map(SensorService::readSensors).toList();
-//          var event = new SensorDataEvent(timestamp, sensors);
-//          publisher.publish(event);
-//        });
+    //    wrapper(
+    //        () -> {
+    //          var sensors = sensorServices.stream().map(SensorService::readSensors).toList();
+    //          var event = new SensorDataEvent(timestamp, sensors);
+    //          publisher.publish(event);
+    //        });
   }
 
   private void wrapper(Runnable r) {
