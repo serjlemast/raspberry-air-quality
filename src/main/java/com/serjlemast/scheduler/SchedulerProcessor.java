@@ -10,6 +10,7 @@ import com.pi4j.io.gpio.digital.PullResistance;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +91,8 @@ public class SchedulerProcessor {
       data[i] = (pulseTime > 50000) ? 1 : 0; // 1 if pulse > 50ms, else 0
     }
 
+    log.info(" >>> 3.1 Starting SchedulerProcessor - {}", Arrays.toString(data));
+
     // Decode the data
     int humidityInt = bitsToByte(data, 0);
     int humidityDec = bitsToByte(data, 8);
@@ -122,8 +125,8 @@ public class SchedulerProcessor {
   }
 
   @SneakyThrows
-  //  @Scheduled(cron = "${scheduled.cron}")
-  @Scheduled(cron = "* */1 * * * *")
+//    @Scheduled(cron = "${scheduled.cron}")
+  @Scheduled(cron = "0 */1  * * * *")
   public void process() {
 
     test();
