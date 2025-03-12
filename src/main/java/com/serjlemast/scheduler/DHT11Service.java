@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,11 @@ public class DHT11Service {
 
   public Map<String, Object> getTemperatureAndHumidity() {
     try {
-
       String jarPath =
-          new File(DHT11Service.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-              .getParent();
-      File scriptFile = new File(jarPath, SCRIPT_NAME);
+          DHT11Service.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+      jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8);
+      File jarFile = new File(jarPath);
+      File scriptFile = new File(jarFile.getParent(), SCRIPT_NAME);
 
       if (!scriptFile.exists()) {
         return Map.of("error", "Python script not found: " + scriptFile.getAbsolutePath());
@@ -38,7 +40,7 @@ public class DHT11Service {
       }
 
       ObjectMapper objectMapper = new ObjectMapper();
-      return objectMapper.readValue(output.toString(), new TypeReference<Map<String, Object>>() {});
+      return objectMapper.readValue(output.toString(), new TypeReference<>() {});
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       return Map.of("error", e.getMessage());
