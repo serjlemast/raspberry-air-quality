@@ -1,10 +1,9 @@
 package com.serjlemast.service;
 
+import com.serjlemast.model.Sensor;
 import java.util.Optional;
-
-import com.serjlemast.model.SensorData;
 
 public interface SensorService {
 
-  Optional<SensorData> readSensors();
+  Optional<Sensor> readSensor();
 }

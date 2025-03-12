@@ -1,3 +1,5 @@
 package com.serjlemast.model;
 
-public record Sensor(String sensorId, Number data) {}
+import java.util.List;
+
+public record Sensor(SensorType type, List<SensorData> data) {}

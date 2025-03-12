@@ -12,6 +12,7 @@ import com.serjlemast.service.SensorService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,25 +20,18 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DHT11_Gpio4_SensorService implements SensorService {
+public class DHT11Gpio4SensorService implements SensorService {
 
   private final Gpio4Reader gpio4Reader;
 
   @Override
-  public Optional<SensorData> readSensors() {
-    var gpioDataOpt = gpio4Reader.read();
-    if (gpioDataOpt.isEmpty()) {
-      return Optional.empty();
-    }
+  public Optional<Sensor> readSensor() {
+    return gpio4Reader.read().map(gpioData -> new Sensor(SensorType.ALL, getSensorData(gpioData)));
+  }
 
-    Map<String, Number> gpioData = gpioDataOpt.get();
-
-    return Optional.of(
-        new SensorData(
-            SensorType.ALL,
-            List.of(
-                new Sensor(TEMPERATURE_CELSIUS_ID, gpioData.get(TEMPERATURE_CELSIUS_ID)),
-                new Sensor(TEMPERATURE_FAHRENHEIT_ID, gpioData.get(TEMPERATURE_FAHRENHEIT_ID)),
-                new Sensor(HUMIDITY_ID, gpioData.get(HUMIDITY_ID)))));
+  private List<SensorData> getSensorData(Map<String, Number> gpioData) {
+    return Stream.of(TEMPERATURE_CELSIUS_ID, TEMPERATURE_FAHRENHEIT_ID, HUMIDITY_ID)
+        .map(id -> new SensorData(id, gpioData.get(id)))
+        .toList();
   }
 }

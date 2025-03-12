@@ -17,10 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-// @RequiredArgsConstructor
 public class Gpio4Reader {
-
-  private final ObjectMapper objectMapper = new ObjectMapper();
 
   public static final String TEMPERATURE_CELSIUS_ID = "temperature_celsius";
 
@@ -29,6 +26,8 @@ public class Gpio4Reader {
   public static final String HUMIDITY_ID = "humidity";
 
   private static final String SCRIPT_NAME = "dht11_reader.py";
+
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   /*
    * Successful:
@@ -59,8 +58,7 @@ public class Gpio4Reader {
         return Optional.empty();
       }
 
-      return Optional.ofNullable(
-          objectMapper.readValue(jsonResponse, new TypeReference<>() {}));
+      return Optional.ofNullable(objectMapper.readValue(jsonResponse, new TypeReference<>() {}));
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       return Optional.empty();

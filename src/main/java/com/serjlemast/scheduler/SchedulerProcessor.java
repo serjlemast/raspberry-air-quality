@@ -1,9 +1,7 @@
 package com.serjlemast.scheduler;
 
-import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,25 +17,15 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
-  @Scheduled(cron = "*/10 * * * * *")
+  @Scheduled(cron = "${scheduled.cron}")
   public void process() {
     wrapper(
-        () -> {
-          var sensorDataList =
-              sensorServices.stream()
-                  .map(SensorService::readSensors)
-                  .filter(Optional::isPresent)
-                  .map(Optional::get)
-                  .toList();
-
-          if (sensorDataList.isEmpty()) {
-            log.info("No sensors found");
-            return;
-          }
-
-          var event = new SensorDataEvent(LocalDateTime.now(), sensorDataList);
-          publisher.publish(event);
-        });
+        () ->
+            sensorServices.stream()
+                .map(SensorService::readSensor)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(publisher::publish));
   }
 
   private void wrapper(Runnable r) {
