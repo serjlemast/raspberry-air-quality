@@ -53,6 +53,8 @@ public class SchedulerProcessor {
                     list.add(e.toString());
                 });
 
+        log.info(" state - " + digitalOutput32.state() +  " isOff - " + digitalOutput32.isOff());
+
         // Initialize a HumiTempComponent with default values
 //        final var dht11 = new HumiTempComponent();
 //
