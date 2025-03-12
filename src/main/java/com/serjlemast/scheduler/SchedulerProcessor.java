@@ -14,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import static java.lang.Thread.sleep;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -42,10 +43,21 @@ public class SchedulerProcessor {
 
 
     @SneakyThrows
-  @Scheduled(cron = "${scheduled.cron}")
+//  @Scheduled(cron = "${scheduled.cron}")
+  @Scheduled(cron = "* */1 * * * *")
   public void process() {
 
-      log.info("process start -{} " + list);
+        // Initialize a HumiTempComponent with default values
+        final var dht11 = new HumiTempComponent();
+
+        System.out.println("Welcome to the HumiTempApp");
+        System.out.println("Measurement starts now.. ");
+
+        // Start some measurements in a loop
+        for (int i = 0; i < 5; i++) {
+            System.out.println("It is currently " + dht11.getTemperature() + "°C and the Humidity is " + dht11.getHumidity() + "%.");
+            sleep(2000);
+        }
 
 //    // Create Pi4J console wrapper/helper
 //    // (This is a utility class to abstract some of the boilerplate stdin/stdout code)
