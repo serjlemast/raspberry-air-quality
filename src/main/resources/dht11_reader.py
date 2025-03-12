@@ -1,34 +1,40 @@
 import time
 import board
 import adafruit_dht
+import json
 
-# Initial the dht device, with data pin connected to:
-# dhtDevice = adafruit_dht.DHT22(board.D4)
-
-# you can pass DHT22 use_pulseio=False if you wouldn't like to use pulseio.
-# This may be necessary on a Linux single board computer like the Raspberry Pi,
-# but it will not work in CircuitPython.
+# Инициализация DHT11 датчика
 dhtDevice = adafruit_dht.DHT11(board.D4, use_pulseio=False)
 
-while True:
+def read_dht11_data():
     try:
-        # Print the values to the serial port
+        # Чтение температуры и влажности
         temperature_c = dhtDevice.temperature
         temperature_f = temperature_c * (9 / 5) + 32
         humidity = dhtDevice.humidity
-        print(
-            "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
-                temperature_f, temperature_c, humidity
-            )
-        )
+
+        # Формирование данных в формате JSON
+        data = {
+            "temperature_celsius": temperature_c,
+            "temperature_fahrenheit": temperature_f,
+            "humidity": humidity
+        }
+
+        return json.dumps(data)  # Возвращаем данные в формате JSON
 
     except RuntimeError as error:
-        # Errors happen fairly often, DHT's are hard to read, just keep going
-        print(error.args[0])
-        time.sleep(2.0)
-        continue
+        # Ошибки чтения
+        return json.dumps({"error": str(error)})
     except Exception as error:
         dhtDevice.exit()
-        raise error
+        return json.dumps({"error": "Unexpected error: " + str(error)})
 
-    time.sleep(2.0)
+# Вводим цикл для получения данных
+if __name__ == "__main__":
+    while True:
+        # Получаем данные и выводим их в JSON-формате
+        result = read_dht11_data()
+        print(result)
+
+        # Подождать перед следующим чтением
+        time.sleep(2.0)

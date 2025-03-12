@@ -13,16 +13,14 @@ public class DHT11Service {
 
   public Map<String, Object> getTemperatureAndHumidity() {
     try {
-      // Чтение ресурса из ресурсов
       InputStream inputStream = getClass().getClassLoader().getResourceAsStream(SCRIPT_NAME);
 
       if (inputStream == null) {
         return Map.of("error", "Python script not found in resources");
       }
 
-      // Создание временного файла для скрипта
       File tempScriptFile = File.createTempFile(SCRIPT_NAME, ".py");
-      tempScriptFile.deleteOnExit(); // Удалится при завершении программы
+      tempScriptFile.deleteOnExit();
 
       // Запись содержимого ресурса в файл
       try (OutputStream outputStream = new FileOutputStream(tempScriptFile)) {
@@ -50,7 +48,7 @@ public class DHT11Service {
       return objectMapper.readValue(output.toString(), new TypeReference<Map<String, Object>>() {});
     } catch (Exception e) {
       e.printStackTrace();
-      return Map.of("error", "Ошибка при выполнении скрипта");
+      return Map.of("error", e.getMessage());
     }
   }
 }
