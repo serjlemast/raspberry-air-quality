@@ -73,9 +73,9 @@ public class SchedulerProcessor {
                 .build());
 
     // Wait for response from DHT11 sensor
-    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
-    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
-    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+//    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+//    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
+//    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
 
 
     log.info(" >>> 3 Starting SchedulerProcessor");
