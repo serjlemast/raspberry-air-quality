@@ -83,9 +83,9 @@ public class SchedulerProcessor {
     // Read 40 bits of data (Temperature and Humidity)
     int[] data = new int[40];
     for (int i = 0; i < 40; i++) {
-      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
+//      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
       long startTime = System.nanoTime();
-      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+//      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
       long pulseTime = System.nanoTime() - startTime;
       data[i] = (pulseTime > 50000) ? 1 : 0; // 1 if pulse > 50ms, else 0
     }
