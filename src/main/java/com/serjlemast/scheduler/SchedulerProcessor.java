@@ -3,7 +3,9 @@ package com.serjlemast.scheduler;
 import com.pi4j.Pi4J;
 import com.pi4j.boardinfo.util.BoardInfoHelper;
 import com.pi4j.context.Context;
+import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalOutput;
+import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInput;
 import com.pi4j.util.Console;
 import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
@@ -26,7 +28,9 @@ public class SchedulerProcessor {
   private final List<SensorService> sensorServices;
 
   private final Context pi4j = Pi4J.newAutoContext();
-  private final DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(32);
+
+
+  private final DigitalOutput digitalOutput32 = pi4j.digitalOutput().create(5);
 
   private final List<String> list  = new ArrayList<>();
 
@@ -34,11 +38,7 @@ public class SchedulerProcessor {
         this.publisher = publisher;
         this.sensorServices = sensorServices;
 
-      digitalOutput32.addListener(
-              e -> {
-                log.info("test  {}", e.toString());
-                list.add(e.toString());
-              });
+
     }
 
 
@@ -47,17 +47,23 @@ public class SchedulerProcessor {
   @Scheduled(cron = "* */1 * * * *")
   public void process() {
 
+        digitalOutput32.addListener(
+                e -> {
+                    log.info("test  {}", e.toString());
+                    list.add(e.toString());
+                });
+
         // Initialize a HumiTempComponent with default values
-        final var dht11 = new HumiTempComponent();
-
-        System.out.println("Welcome to the HumiTempApp");
-        System.out.println("Measurement starts now.. ");
-
-        // Start some measurements in a loop
-        for (int i = 0; i < 5; i++) {
-            System.out.println("It is currently " + dht11.getTemperature() + "°C and the Humidity is " + dht11.getHumidity() + "%.");
-            sleep(2000);
-        }
+//        final var dht11 = new HumiTempComponent();
+//
+//        System.out.println("Welcome to the HumiTempApp");
+//        System.out.println("Measurement starts now.. ");
+//
+//        // Start some measurements in a loop
+//        for (int i = 0; i < 5; i++) {
+//            System.out.println("It is currently " + dht11.getTemperature() + "°C and the Humidity is " + dht11.getHumidity() + "%.");
+//            sleep(2000);
+//        }
 
 //    // Create Pi4J console wrapper/helper
 //    // (This is a utility class to abstract some of the boilerplate stdin/stdout code)
