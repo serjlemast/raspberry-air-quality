@@ -36,12 +36,9 @@ public class DHT11_Gpio4_SensorService implements SensorService {
         new SensorData(
             SensorType.ALL,
             List.of(
-                new Sensor(
-                    "temperature_celsius", (Double) data.getOrDefault("temperature_celsius", 0.0)),
-                new Sensor(
-                    "temperature_fahrenheit",
-                    (Double) data.getOrDefault("temperature_fahrenheit", 0.0)),
-                new Sensor("humidity", (Double) data.getOrDefault("humidity", 0.0)))));
+                new Sensor("temperature_celsius", (String) data.get("temperature_celsius")),
+                new Sensor("temperature_fahrenheit", (String) data.get("temperature_fahrenheit")),
+                new Sensor("humidity", (String) data.get("humidity")))));
   }
 
   private final ObjectMapper objectMapper = new ObjectMapper();
