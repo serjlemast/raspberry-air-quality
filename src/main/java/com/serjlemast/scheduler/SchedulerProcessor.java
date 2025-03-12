@@ -23,7 +23,7 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
-  private static final int GPIO_PIN = 7;
+  private static final int GPIO_PIN_4 = 4;
 
   //
   //  private Context pi4j = Pi4J.newAutoContext();
@@ -45,7 +45,7 @@ public class SchedulerProcessor {
             DigitalOutputConfig.newBuilder(pi4j)
                 .id("DHT11_OUTPUT")
                 .name("DHT11 Output")
-                .address(GPIO_PIN)
+                .address(GPIO_PIN_4)
                 .onState(com.pi4j.io.gpio.digital.DigitalState.HIGH)
                 .build());
 
@@ -67,7 +67,7 @@ public class SchedulerProcessor {
             DigitalInputConfig.newBuilder(pi4j)
                 .id("DHT11_INPUT")
                 .name("DHT11 Input")
-                .address(GPIO_PIN) // Same GPIO pin
+                .address(GPIO_PIN_4) // Same GPIO pin
                 .pull(PullResistance.OFF) // No pull-up or pull-down resistor
                 .build());
 
