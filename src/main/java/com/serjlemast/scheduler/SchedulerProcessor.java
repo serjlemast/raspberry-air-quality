@@ -32,7 +32,7 @@ public class SchedulerProcessor {
     this.sensorServices = sensorServices;
     Context pi4j = Pi4J.newAutoContext();
     this.output = pi4j.dout().create(GPIO_PIN);
-    this.input = pi4j.din().create(GPIO_PIN);
+    this.input = pi4j.din();
   }
 
   @SneakyThrows
