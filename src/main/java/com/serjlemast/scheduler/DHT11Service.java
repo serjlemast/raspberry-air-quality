@@ -23,8 +23,7 @@ public class DHT11Service {
       File tempScriptFile = extractPythonScript();
 
       // Запуск Python-скрипта через ProcessBuilder
-      ProcessBuilder processBuilder =
-          new ProcessBuilder("python3", tempScriptFile.getAbsolutePath());
+      ProcessBuilder processBuilder = new ProcessBuilder("sudo", "python3", tempScriptFile.getAbsolutePath());
       Process process = processBuilder.start();
 
       // Чтение вывода скрипта
