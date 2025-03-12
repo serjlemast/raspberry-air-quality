@@ -72,26 +72,18 @@ public class SchedulerProcessor {
     } catch (InterruptedException ignored) {
     }
     // Wait for response from DHT11 sensor
-    //    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
-    //    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
-    //    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
+    while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
 
     log.info(" >>> 3 Starting SchedulerProcessor, input.state() - {}", input.state());
 
     // Read 40 bits of data (Temperature and Humidity)
     int[] data = new int[40];
     for (int i = 0; i < 40; i++) {
-      //      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException ignored) {
-      }
+      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.LOW) {}
       long startTime = System.nanoTime();
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException ignored) {
-      }
-      //      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
+      while (input.state() == com.pi4j.io.gpio.digital.DigitalState.HIGH) {}
       long pulseTime = System.nanoTime() - startTime;
       data[i] = (pulseTime > 50000) ? 1 : 0; // 1 if pulse > 50ms, else 0
     }
