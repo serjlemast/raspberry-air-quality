@@ -25,9 +25,6 @@ public class SchedulerProcessor {
 
   private static final int GPIO_PIN_4 = 4;
 
-  // Create Pi4J context
-  private static final Context pi4j = Pi4J.newAutoContext();
-
   //
   //  private Context pi4j = Pi4J.newAutoContext();
 
@@ -37,6 +34,7 @@ public class SchedulerProcessor {
   }
 
   public void test() {
+    Context pi4j = Pi4J.newAutoContext();
     log.info("Starting SchedulerProcessor");
     // Create digital output for controlling DHT11 sensor
     DigitalOutput output =
@@ -59,6 +57,9 @@ public class SchedulerProcessor {
       Thread.sleep(1);
     } catch (InterruptedException ignored) {
     }
+    pi4j.shutdown();
+
+    pi4j = Pi4J.newAutoContext(); // Re-initialize Pi4J context
 
     // After sending, now switch to input to read data
     DigitalInput input =
