@@ -11,7 +11,6 @@ import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -146,7 +145,6 @@ public class SchedulerProcessor {
     return value;
   }
 
-  @SneakyThrows
   //    @Scheduled(cron = "${scheduled.cron}")
   @Scheduled(cron = "*/10 * * * * *")
   public void process() {
