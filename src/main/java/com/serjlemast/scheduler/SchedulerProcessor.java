@@ -25,6 +25,9 @@ public class SchedulerProcessor {
 
   private static final int GPIO_PIN_4 = 4;
 
+  // Create Pi4J context
+  private static final Context pi4j = Pi4J.newAutoContext();
+
   //
   //  private Context pi4j = Pi4J.newAutoContext();
 
@@ -35,10 +38,8 @@ public class SchedulerProcessor {
     test();
   }
 
-  public void test() {
-    // Create Pi4J context
-    Context pi4j = Pi4J.newAutoContext();
-
+  public static void test() {
+    log.info("Starting SchedulerProcessor");
     // Create digital output for controlling DHT11 sensor
     DigitalOutput output =
         pi4j.create(
