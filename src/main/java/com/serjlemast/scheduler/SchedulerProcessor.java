@@ -3,7 +3,9 @@ package com.serjlemast.scheduler;
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.DigitalInput;
+import com.pi4j.io.gpio.digital.DigitalInputConfig;
 import com.pi4j.io.gpio.digital.DigitalOutput;
+import com.pi4j.io.gpio.digital.DigitalOutputConfig;
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
@@ -23,16 +25,96 @@ public class SchedulerProcessor {
   private final List<SensorService> sensorServices;
 
   private static final int GPIO_PIN = 4;
-
-  private final DigitalOutput output;
-  private final DigitalInput input;
+//
+//  private Context pi4j = Pi4J.newAutoContext();
+  
 
   public SchedulerProcessor(RabbitMqPublisher publisher, List<SensorService> sensorServices) {
     this.publisher = publisher;
     this.sensorServices = sensorServices;
+  }
+
+  public void test() {
     Context pi4j = Pi4J.newAutoContext();
-    this.output = pi4j.dout().create(GPIO_PIN);
-    this.input = pi4j.din();
+
+    log.info("Requesting data from DHT11...");
+
+    // Step 1: Set GPIO as output and send request signal
+    DigitalOutputConfig outputConfig =
+        DigitalOutputConfig.newBuilder(pi4j)
+            .id("DHT11_OUTPUT")
+            .name("DHT11 Output")
+            .address(GPIO_PIN)
+            .shutdown(DigitalState.LOW)
+            .initial(DigitalState.HIGH)
+            .build();
+    DigitalOutput output = pi4j.create(outputConfig);
+
+    output.low();
+    try {
+      Thread.sleep(18);
+    } catch (InterruptedException ignored) {
+    }
+    output.high();
+    try {
+      Thread.sleep(1);
+    } catch (InterruptedException ignored) {
+    }
+
+    // Step 2: Switch GPIO to input mode
+    pi4j.shutdown();
+    pi4j = Pi4J.newAutoContext();
+
+    DigitalInputConfig inputConfig =
+        DigitalInputConfig.newBuilder(pi4j)
+            .id("DHT11_INPUT")
+            .name("DHT11 Input")
+            .address(GPIO_PIN)
+            .pull(null)
+            .build();
+    DigitalInput input = pi4j.create(inputConfig);
+
+    // Step 3: Wait for response
+    while (input.state() == DigitalState.HIGH) {}
+    while (input.state() == DigitalState.LOW) {}
+    while (input.state() == DigitalState.HIGH) {}
+
+    // Step 4: Read 40-bit data
+    int[] data = new int[40];
+    for (int i = 0; i < 40; i++) {
+      while (input.state() == DigitalState.LOW) {}
+      long startTime = System.nanoTime();
+      while (input.state() == DigitalState.HIGH) {}
+      long pulseTime = System.nanoTime() - startTime;
+      data[i] = (pulseTime > 50000) ? 1 : 0;
+    }
+
+    // Step 5: Decode data
+    int humidityInt = bitsToByte(data, 0);
+    int humidityDec = bitsToByte(data, 8);
+    int temperatureInt = bitsToByte(data, 16);
+    int temperatureDec = bitsToByte(data, 24);
+    int checksum = bitsToByte(data, 32);
+
+    int calculatedChecksum = humidityInt + humidityDec + temperatureInt + temperatureDec;
+    if ((calculatedChecksum & 0xFF) == checksum) {
+      log.info("Data received successfully:");
+      log.info("Temperature: " + temperatureInt + "." + temperatureDec + "°C");
+      log.info("Humidity: " + humidityInt + "." + humidityDec + "%");
+    } else {
+      System.err.println("Checksum error!");
+    }
+
+    pi4j.shutdown();
+  }
+
+  private static int bitsToByte(int[] data, int start) {
+    int value = 0;
+    for (int i = 0; i < 8; i++) {
+      value <<= 1;
+      value |= data[start + i];
+    }
+    return value;
   }
 
   @SneakyThrows
@@ -40,46 +122,17 @@ public class SchedulerProcessor {
   @Scheduled(cron = "* */1 * * * *")
   public void process() {
 
-    // Запрос данных (18 мс низкого сигнала)
-    output.state(DigitalState.LOW);
-    try {
-      Thread.sleep(18);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-    output.state(DigitalState.HIGH);
-    try {
-      Thread.sleep(1);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    // Чтение ответного сигнала
-    int[] data = new int[40]; // Битовый поток данных
-    for (int i = 0; i < 40; i++) {
-      while (input.state() == DigitalState.LOW) {} // Ждем начала бита
-      long startTime = System.nanoTime();
-      while (input.state() == DigitalState.HIGH) {} // Ждем окончания бита
-      long pulseTime = System.nanoTime() - startTime;
-      data[i] = (pulseTime > 50000) ? 1 : 0; // 0 или 1
-    }
-
-    // Парсим данные
-    int humidity = (data[0] << 7) + data[1];
-    int temperature = (data[16] << 7) + data[17];
-
-    System.out.println("Температура: " + temperature + "°C");
-    System.out.println("Влажность: " + humidity + "%");
+    test();
 
     // Initialize a HumiTempComponent with default values
     //        final var dht11 = new HumiTempComponent();
     //
-    //        System.out.println("Welcome to the HumiTempApp");
-    //        System.out.println("Measurement starts now.. ");
+    //        log.info("Welcome to the HumiTempApp");
+    //        log.info("Measurement starts now.. ");
     //
     //        // Start some measurements in a loop
     //        for (int i = 0; i < 5; i++) {
-    //            System.out.println("It is currently " + dht11.getTemperature() + "°C and the
+    //            log.info("It is currently " + dht11.getTemperature() + "°C and the
     // Humidity is " + dht11.getHumidity() + "%.");
     //            sleep(2000);
     //        }
