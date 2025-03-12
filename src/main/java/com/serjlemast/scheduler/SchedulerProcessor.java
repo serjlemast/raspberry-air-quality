@@ -6,7 +6,6 @@ import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalInputConfig;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalOutputConfig;
-import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.gpio.digital.PullResistance;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
@@ -24,7 +23,7 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
-  private static final int GPIO_PIN = 4;
+  private static final int GPIO_PIN = 7;
 
   //
   //  private Context pi4j = Pi4J.newAutoContext();
@@ -37,7 +36,7 @@ public class SchedulerProcessor {
   }
 
   public void test() {
-    /// Create Pi4J context
+    // Create Pi4J context
     Context pi4j = Pi4J.newAutoContext();
 
     // Create digital output for controlling DHT11 sensor
@@ -47,7 +46,7 @@ public class SchedulerProcessor {
                 .id("DHT11_OUTPUT")
                 .name("DHT11 Output")
                 .address(GPIO_PIN)
-                .onState(DigitalState.HIGH)
+                .onState(com.pi4j.io.gpio.digital.DigitalState.HIGH)
                 .build());
 
     // Send signal to DHT11 sensor
@@ -62,13 +61,13 @@ public class SchedulerProcessor {
     } catch (InterruptedException ignored) {
     }
 
-    // Create digital input for reading data from DHT11 sensor
+    // After sending, now switch to input to read data
     DigitalInput input =
         pi4j.create(
             DigitalInputConfig.newBuilder(pi4j)
                 .id("DHT11_INPUT")
                 .name("DHT11 Input")
-                .address(GPIO_PIN)
+                .address(GPIO_PIN) // Same GPIO pin
                 .pull(PullResistance.OFF) // No pull-up or pull-down resistor
                 .build());
 
