@@ -1,22 +1,21 @@
 package com.serjlemast.scheduler;
 
 import com.pi4j.Pi4J;
-import com.pi4j.boardinfo.util.BoardInfoHelper;
 import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.DigitalInput;
+import com.pi4j.io.gpio.digital.DigitalInputConfig;
 import com.pi4j.io.gpio.digital.DigitalOutput;
-import com.pi4j.plugin.gpiod.provider.gpio.digital.GpioDDigitalInput;
-import com.pi4j.util.Console;
+import com.pi4j.io.gpio.digital.DigitalState;
+import com.pi4j.io.gpio.digital.PullResistance;
+import com.pi4j.library.pigpio.internal.PIGPIO;
 import com.serjlemast.model.SensorDataEvent;
 import com.serjlemast.publisher.RabbitMqPublisher;
 import com.serjlemast.service.SensorService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import static java.lang.Thread.sleep;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +26,13 @@ public class SchedulerProcessor {
   private final RabbitMqPublisher publisher;
   private final List<SensorService> sensorServices;
 
+    private static final int GPIO_PIN = 4;
+
   private final Context pi4j = Pi4J.newAutoContext();
 
 
-  private final DigitalInput digitalOutput32 = pi4j.digitalInput().create(5);
+    DigitalOutput output = pi4j.dout().create(GPIO_PIN);
+    DigitalInput input = pi4j.din().create(GPIO_PIN);
 
   private final List<String> list  = new ArrayList<>();
 
@@ -47,13 +49,28 @@ public class SchedulerProcessor {
   @Scheduled(cron = "* */1 * * * *")
   public void process() {
 
-        digitalOutput32.addListener(
-                e -> {
-                    log.info("test  {}", e.toString());
-                    list.add(e.toString());
-                });
+        // Запрос данных (18 мс низкого сигнала)
+        output.state(DigitalState.LOW);
+        try { Thread.sleep(18); } catch (InterruptedException e) { }
+        output.state(DigitalState.HIGH);
+        try { Thread.sleep(1); } catch (InterruptedException e) { }
 
-        log.info(" state - " + digitalOutput32.state() +  " isOff - " + digitalOutput32.isOff());
+        // Чтение ответного сигнала
+        int[] data = new int[40]; // Битовый поток данных
+        for (int i = 0; i < 40; i++) {
+            while (input.state() == DigitalState.LOW) {} // Ждем начала бита
+            long startTime = System.nanoTime();
+            while (input.state() == DigitalState.HIGH) {} // Ждем окончания бита
+            long pulseTime = System.nanoTime() - startTime;
+            data[i] = (pulseTime > 50000) ? 1 : 0; // 0 или 1
+        }
+
+        // Парсим данные
+        int humidity = (data[0] << 7) + data[1];
+        int temperature = (data[16] << 7) + data[17];
+
+        System.out.println("Температура: " + temperature + "°C");
+        System.out.println("Влажность: " + humidity + "%");
 
         // Initialize a HumiTempComponent with default values
 //        final var dht11 = new HumiTempComponent();
