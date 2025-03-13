@@ -1,7 +1,7 @@
 package com.serjlemast.publisher;
 
 import com.serjlemast.model.Sensor;
-import com.serjlemast.model.SensorEvent;
+import com.serjlemast.publisher.event.SensorEvent;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

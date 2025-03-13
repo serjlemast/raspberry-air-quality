@@ -15,6 +15,10 @@ spring:
 scheduled:
   cron: ${APP_SERVICE_CRONE:*/1 * * * * *}
 
+gpio:
+  mock:
+    enabled: ${APP_SERVICE_GPIO_MOCK_ENABLED:false}
+
 app:
   rabbitmq:
     username: ${APP_SERVICE_RABBITMQ_USERNAME}

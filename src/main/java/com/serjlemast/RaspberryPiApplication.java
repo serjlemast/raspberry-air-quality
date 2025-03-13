@@ -6,9 +6,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
-public class RunApplication {
+public class RaspberryPiApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(RunApplication.class, args);
+    SpringApplication.run(RaspberryPiApplication.class, args);
   }
 }

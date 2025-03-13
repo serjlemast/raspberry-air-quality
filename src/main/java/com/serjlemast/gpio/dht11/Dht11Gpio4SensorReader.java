@@ -1,7 +1,9 @@
-package com.serjlemast.gpio;
+package com.serjlemast.gpio.dht11;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serjlemast.gpio.SensorReader;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,12 +14,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class Gpio4Reader {
+public class Dht11Gpio4SensorReader implements SensorReader {
 
   public static final String TEMPERATURE_CELSIUS_ID = "temperature_celsius";
 
@@ -29,6 +33,11 @@ public class Gpio4Reader {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
+  private final Random random = new Random();
+
+  @Value("${gpio.mock.enabled}")
+  private boolean mockEnable;
+
   /*
    * Successful:
    * {temperature_celsius=24.7, temperature_fahrenheit=76.46000000000001, humidity=44},
@@ -38,6 +47,13 @@ public class Gpio4Reader {
    * {error=Checksum did not validate. Try again.}.
    */
   public Optional<Map<String, Number>> read() {
+
+    // If mock mode is enabled, return randomly generated sensor data.
+    // Otherwise, return an empty Optional (indicating real sensor data should be used).
+    if (mockEnable) {
+      return Optional.of(generateMockData());
+    }
+
     try {
       File tempScriptFile = extractPythonScript();
 
@@ -106,5 +122,16 @@ public class Gpio4Reader {
 
       return tempScriptFile;
     }
+  }
+
+  private Map<String, Number> generateMockData() {
+    double tempC = 24.5 + random.nextDouble() * 0.5; // Random between 24.5 and 25.0
+    double tempF = tempC * 9 / 5 + 32;
+    int humidity = 43 + random.nextInt(3); // Random between 43 and 45
+
+    return Map.of(
+        "temperature_celsius", Math.round(tempC * 10.0) / 10.0, // One decimal place
+        "temperature_fahrenheit", Math.round(tempF * 100.0) / 100.0, // Two decimal places
+        "humidity", humidity);
   }
 }

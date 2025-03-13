@@ -6,7 +6,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig
 @SpringRabbitTest
-class RunApplicationTests {
+class RaspberryPiApplicationTests {
 
   @Test
   void contextLoads() {}

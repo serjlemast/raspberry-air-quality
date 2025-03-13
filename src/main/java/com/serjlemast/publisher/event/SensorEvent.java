@@ -1,6 +1,8 @@
-package com.serjlemast.model;
+package com.serjlemast.publisher.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.serjlemast.model.Sensor;
+
 import java.time.LocalDateTime;
 
 public record SensorEvent(

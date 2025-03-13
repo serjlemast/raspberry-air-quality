@@ -1,10 +1,10 @@
-package com.serjlemast.service.impl;
+package com.serjlemast.service.dth11;
 
-import static com.serjlemast.gpio.Gpio4Reader.HUMIDITY_ID;
-import static com.serjlemast.gpio.Gpio4Reader.TEMPERATURE_CELSIUS_ID;
-import static com.serjlemast.gpio.Gpio4Reader.TEMPERATURE_FAHRENHEIT_ID;
+import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.HUMIDITY_ID;
+import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.TEMPERATURE_CELSIUS_ID;
+import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.TEMPERATURE_FAHRENHEIT_ID;
 
-import com.serjlemast.gpio.Gpio4Reader;
+import com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader;
 import com.serjlemast.model.Sensor;
 import com.serjlemast.model.SensorData;
 import com.serjlemast.model.SensorType;
@@ -20,13 +20,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DHT11Gpio4SensorService implements SensorService {
+public class Dht11Gpio4SensorService implements SensorService {
 
-  private final Gpio4Reader gpio4Reader;
+  private final Dht11Gpio4SensorReader dht11Gpio4SensorReader;
 
   @Override
   public Optional<Sensor> readSensor() {
-    return gpio4Reader.read().map(gpioData -> new Sensor(SensorType.ALL, getSensorData(gpioData)));
+    return dht11Gpio4SensorReader
+        .read()
+        .map(gpioData -> new Sensor(SensorType.ALL, getSensorData(gpioData)));
   }
 
   private List<SensorData> getSensorData(Map<String, Number> gpioData) {

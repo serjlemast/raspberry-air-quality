@@ -37,18 +37,13 @@ dependencies {
     implementation 'com.pi4j:pi4j-plugin-linuxfs:2.8.0'
     // https://mvnrepository.com/artifact/com.pi4j/pi4j-library-linuxfs
     implementation 'com.pi4j:pi4j-library-linuxfs:2.8.0'
-
-//    implementation("com.github.nathanhrdlicka:pi4j-dht11:1.0.0")
-
-    // https://mvnrepository.com/artifact/com.fazecast/jSerialComm
     implementation 'com.fazecast:jSerialComm:2.11.0'
-
-
-
     implementation 'com.pi4j:pi4j-plugin-gpiod:2.8.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
