@@ -5,9 +5,9 @@ import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.TEMPERATURE_CELSI
 import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.TEMPERATURE_FAHRENHEIT_ID;
 
 import com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader;
-import com.serjlemast.model.Sensor;
-import com.serjlemast.model.SensorData;
-import com.serjlemast.model.SensorType;
+import com.serjlemast.model.sensor.Sensor;
+import com.serjlemast.model.sensor.SensorData;
+import com.serjlemast.model.sensor.SensorType;
 import com.serjlemast.service.SensorService;
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.serjlemast.model;
+package com.serjlemast.model.sensor;
 
 public enum SensorType {
   ALL,

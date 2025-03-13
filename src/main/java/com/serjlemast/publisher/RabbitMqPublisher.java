@@ -1,8 +1,10 @@
 package com.serjlemast.publisher;
 
-import com.serjlemast.model.Sensor;
+import com.serjlemast.model.raspberry.RaspberryInfo;
+import com.serjlemast.model.sensor.Sensor;
 import com.serjlemast.publisher.event.SensorEvent;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -22,9 +24,9 @@ public class RabbitMqPublisher {
 
   private final RabbitTemplate template;
 
-  public void publish(Sensor sensor) {
-    var event = new SensorEvent(LocalDateTime.now(), sensor);
-    log.info("Publishing data: {}", event);
-    template.convertAndSend(exchange, routingKey, event);
+  public void publish(RaspberryInfo info, List<Sensor> sensors) {
+    log.info("Publishing: info - {}, sensors - {}", info, sensors);
+    template.convertAndSend(
+        exchange, routingKey, new SensorEvent(LocalDateTime.now(), info, sensors));
   }
 }
