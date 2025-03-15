@@ -60,7 +60,7 @@ spring.rabbitmq.password=........
 spring.rabbitmq.port=5672
 ```
 
-### IDE setup
+### Remote JVM debug
 
 1. Add configuration IDE
 
@@ -78,6 +78,27 @@ User module classpath: `raspberry-air-quality.main`
 
 ```
 java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar build/libs/spring-boot-application.jar
+```
+
+or
+
+```
+java -Xmx256m -Xms128m -XX:+UseG1GC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar build/libs/spring-boot-application.jar
+```
+
+### Minimum memory settings
+
+If your application is very lightweight, you can try:
+
+```
+java -Xmx128m -Xms64m -XX:+UseSerialGC -jar build/libs/spring-boot-application.jar
+```
+
+However, if you use a database, REST API, or caching, 128MB might not be enough.
+In that case, it's safer to allocate at least 256MB:
+
+```
+java -Xmx256m -Xms128m -XX:+UseG1GC -jar build/libs/spring-boot-application.jar
 ```
 
 ### Raspberry pi 4
