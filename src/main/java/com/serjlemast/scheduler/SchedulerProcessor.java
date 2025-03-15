@@ -26,13 +26,13 @@ public class SchedulerProcessor {
           var info = raspberryService.getInfo();
           var sensors =
               sensorServices.stream()
-                  .map(SensorService::readSensor)
+                  .map(SensorService::readSensorData)
                   .filter(Optional::isPresent)
                   .map(Optional::get)
                   .toList();
 
           if (sensors.isEmpty()) {
-            log.warn("No sensors found for Raspberry - {}", info);
+            log.warn("No sensors detected for the Raspberry Pi controller: {}", info);
             return;
           }
 
@@ -43,8 +43,8 @@ public class SchedulerProcessor {
   private void wrapper(Runnable r) {
     try {
       r.run();
-    } catch (Exception e) {
-      log.error("Error writing sensor data", e);
+    } catch (Exception ex) {
+      log.error("Failed to publish data from the Raspberry Pi controller", ex);
     }
   }
 }

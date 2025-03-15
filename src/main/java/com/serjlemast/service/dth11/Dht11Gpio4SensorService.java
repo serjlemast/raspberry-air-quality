@@ -14,10 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class Dht11Gpio4SensorService implements SensorService {
@@ -25,13 +23,19 @@ public class Dht11Gpio4SensorService implements SensorService {
   private final Dht11Gpio4SensorReader dht11Gpio4SensorReader;
 
   @Override
-  public Optional<Sensor> readSensor() {
+  public Optional<Sensor> readSensorData() {
     return dht11Gpio4SensorReader
         .read()
-        .map(gpioData -> new Sensor(SensorType.ALL, getSensorData(gpioData)));
+        .map(gpioData -> new Sensor(SensorType.DHT_11, fetchDh11SensorData(gpioData)));
   }
 
-  private List<SensorData> getSensorData(Map<String, Number> gpioData) {
+  /**
+   * Converts GPIO data into a list of sensor readings.
+   *
+   * @param gpioData A map containing sensor IDs as keys and their corresponding values.
+   * @return A list of {@link SensorData} objects with the retrieved sensor values.
+   */
+  private List<SensorData> fetchDh11SensorData(Map<String, Number> gpioData) {
     return Stream.of(TEMPERATURE_CELSIUS_ID, TEMPERATURE_FAHRENHEIT_ID, HUMIDITY_ID)
         .map(id -> new SensorData(id, gpioData.get(id)))
         .toList();

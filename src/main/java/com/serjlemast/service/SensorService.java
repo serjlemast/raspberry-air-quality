@@ -5,5 +5,5 @@ import java.util.Optional;
 
 public interface SensorService {
 
-  Optional<Sensor> readSensor();
+  Optional<Sensor> readSensorData();
 }

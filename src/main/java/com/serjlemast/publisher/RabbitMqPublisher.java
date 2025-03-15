@@ -2,7 +2,7 @@ package com.serjlemast.publisher;
 
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.model.sensor.Sensor;
-import com.serjlemast.publisher.event.SensorEvent;
+import com.serjlemast.publisher.event.RaspberryEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,6 @@ public class RabbitMqPublisher {
   public void publish(RaspberryInfo info, List<Sensor> sensors) {
     log.info("Publishing: info - {}, sensors - {}", info, sensors);
     template.convertAndSend(
-        exchange, routingKey, new SensorEvent(LocalDateTime.now(), info, sensors));
+        exchange, routingKey, new RaspberryEvent(LocalDateTime.now(), info, sensors));
   }
 }

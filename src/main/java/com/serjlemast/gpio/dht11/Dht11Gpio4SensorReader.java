@@ -3,7 +3,6 @@ package com.serjlemast.gpio.dht11;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serjlemast.gpio.SensorReader;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -125,13 +124,13 @@ public class Dht11Gpio4SensorReader implements SensorReader {
   }
 
   private Map<String, Number> generateMockData() {
-    double tempC = 24.5 + random.nextDouble() * 0.5; // Random between 24.5 and 25.0
+    double tempC = 21.5 + random.nextDouble() * 0.5;
     double tempF = tempC * 9 / 5 + 32;
-    int humidity = 43 + random.nextInt(3); // Random between 43 and 45
+    int humidity = 42 + random.nextInt(4);
 
     return Map.of(
-        "temperature_celsius", Math.round(tempC * 10.0) / 10.0, // One decimal place
-        "temperature_fahrenheit", Math.round(tempF * 100.0) / 100.0, // Two decimal places
-        "humidity", humidity);
+        TEMPERATURE_CELSIUS_ID, Math.round(tempC * 10.0) / 10.0,
+        TEMPERATURE_FAHRENHEIT_ID, Math.round(tempF * 100.0) / 100.0,
+        HUMIDITY_ID, humidity);
   }
 }
