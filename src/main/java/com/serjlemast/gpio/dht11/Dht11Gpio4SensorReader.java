@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,6 @@ public class Dht11Gpio4SensorReader implements SensorReader {
   private static final String SCRIPT_NAME = "dht11_reader.py";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
-
-  private final Random random = new Random();
 
   @Value("${gpio.mock.enabled}")
   private boolean mockEnable;
@@ -124,9 +122,9 @@ public class Dht11Gpio4SensorReader implements SensorReader {
   }
 
   private Map<String, Number> generateMockData() {
-    double tempC = 21.5 + random.nextDouble() * 0.5;
+    double tempC = 21.5 + ThreadLocalRandom.current().nextDouble() * 0.5;
     double tempF = tempC * 9 / 5 + 32;
-    int humidity = 42 + random.nextInt(4);
+    int humidity = 42 + ThreadLocalRandom.current().nextInt(4);
 
     return Map.of(
         TEMPERATURE_CELSIUS_ID, Math.round(tempC * 10.0) / 10.0,

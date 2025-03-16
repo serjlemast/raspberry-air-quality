@@ -20,13 +20,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class Dht11Gpio4SensorService implements SensorService {
 
+  private static final String DEVICE_ID = "DHT11:001";
+
   private final Dht11Gpio4SensorReader dht11Gpio4SensorReader;
 
   @Override
   public Optional<Sensor> readSensorData() {
     return dht11Gpio4SensorReader
         .read()
-        .map(gpioData -> new Sensor(SensorType.DHT_11, fetchDh11SensorData(gpioData)));
+        .map(gpioData -> new Sensor(DEVICE_ID, SensorType.DHT_11, fetchDh11SensorData(gpioData)));
   }
 
   /**

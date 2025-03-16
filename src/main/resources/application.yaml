@@ -15,6 +15,10 @@ spring:
 scheduled:
   cron: ${APP_SERVICE_CRONE:*/1 * * * * *}
 
+controller:
+  deviceId: ${APP_SERVICE_DEVICE_ID:"Raspberry.Pi4:001"}
+
+
 gpio:
   mock:
     enabled: ${APP_SERVICE_GPIO_MOCK_ENABLED:false}

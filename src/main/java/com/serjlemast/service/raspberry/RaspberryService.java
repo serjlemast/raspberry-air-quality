@@ -4,6 +4,7 @@ import com.pi4j.Pi4J;
 import com.pi4j.boardinfo.util.BoardInfoHelper;
 import com.pi4j.context.Context;
 import com.serjlemast.model.raspberry.RaspberryInfo;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class RaspberryService {
 
   @Value("${gpio.mock.enabled}")
   private boolean mockEnable;
+
+  @Value("${controller.deviceId}")
+  private String deviceId;
 
   private Context pi4j;
 
@@ -29,6 +33,7 @@ public class RaspberryService {
     return mockEnable
         ? defaultInfo()
         : new RaspberryInfo(
+            deviceId,
             pi4j.boardInfo().getBoardModel().getLabel(),
             pi4j.boardInfo().getOperatingSystem().getName(),
             pi4j.boardInfo().getJavaInfo().getVersion(),
@@ -37,6 +42,12 @@ public class RaspberryService {
   }
 
   private RaspberryInfo defaultInfo() {
-    return new RaspberryInfo("boardModel", "operatingSystem", "javaVersions", 256.0, 40.0);
+    return new RaspberryInfo(
+        "defaultDeviceId",
+        "boardModel",
+        "operatingSystem",
+        "javaVersions",
+        ThreadLocalRandom.current().nextDouble(128, 256),
+        ThreadLocalRandom.current().nextDouble(40.0, 45.00));
   }
 }
