@@ -122,9 +122,9 @@ public class Dht11Gpio4SensorReader implements SensorReader {
   }
 
   private Map<String, Number> generateMockData() {
-    double tempC = 21.5 + ThreadLocalRandom.current().nextDouble() * 0.5;
+    double tempC = ThreadLocalRandom.current().nextDouble(18, 35);
     double tempF = tempC * 9 / 5 + 32;
-    int humidity = 42 + ThreadLocalRandom.current().nextInt(4);
+    int humidity = ThreadLocalRandom.current().nextInt(25, 55);
 
     return Map.of(
         TEMPERATURE_CELSIUS_ID, Math.round(tempC * 10.0) / 10.0,
