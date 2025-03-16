@@ -1,24 +1,27 @@
 package com.serjlemast.configuration;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import org.springframework.context.annotation.Bean;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 @Configuration
 @EnableScheduling
-public class AsyncSchedulingConfig implements SchedulingConfigurer {
+public class AsyncSchedulingConfig implements AsyncConfigurer {
 
-  @Bean
-  public Executor taskExecutor() {
-    return Executors.newScheduledThreadPool(50);
+  @Override
+  public Executor getAsyncExecutor() {
+    var executor = new SimpleAsyncTaskExecutor();
+    executor.setVirtualThreads(true);
+    executor.setThreadNamePrefix("AsyncExecutor-");
+    return executor;
   }
 
   @Override
-  public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-    taskRegistrar.setScheduler(taskExecutor());
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return new SimpleAsyncUncaughtExceptionHandler();
   }
 }
