@@ -68,22 +68,24 @@ Edit configurations >  Run / Debug > Remote > Remote Debugging or Debugging
 
 Debug mode: `Attach to remote JVM`
 
-HOST: `192.168.1.77`
+HOST: `your.raspberry.pi.ip`
 PORT: `5005`
 
-Command line arguments for remote JVM: `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005`
+###### use command 'ifconfig' on raspberry for ipaddress
+
+Command line arguments for remote JVM: `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005` 
 User module classpath: `raspberry-air-quality.main`
 
-2. Run java app:
+2. Run java app on raspberry:
 
 ```
-java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar build/libs/spring-boot-application.jar
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar build/libs/spring-boot-application.jar
 ```
 
 or
 
 ```
-java -Xmx256m -Xms128m -XX:+UseG1GC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar build/libs/spring-boot-application.jar
+java -Xmx256m -Xms128m -XX:+UseG1GC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar build/libs/spring-boot-application.jar
 ```
 
 ### Minimum memory settings
