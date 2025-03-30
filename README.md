@@ -125,6 +125,59 @@ sudo pip3 install adafruit-circuitpython-dht
 sudo apt-get install libgpiod2
 ```
 
+#### Creating a Systemd Service
+
+Run the following command to create a new service file:
+
+```
+sudo nano /etc/systemd/system/air-quality.service
+```
+
+Copy and paste this content into the file:
+
+```
+[Unit]
+Description=Raspberry Pi Air Quality Monitoring Application
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/<projectPath>
+ExecStart=/usr/bin/java -Xmx256m -Xms128m -XX:+UseG1GC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar spring-boot-application.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+Reload Systemd and Enable the Service
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable <serviceName>.service
+```
+
+Start the Service
+
+```
+sudo systemctl start <serviceName>.service
+```
+
+Check Service Status
+
+```
+sudo systemctl status <serviceName>.service
+```
+
+Logs
+
+```
+journalctl -u air-quality.service -n 50 --no-pager
+```
+
 #### Java code style
 
 Java code style refers to the conventions and guidelines that developers follow when writing Java code to ensure
