@@ -23,6 +23,10 @@ gpio:
   mock:
     enabled: ${APP_SERVICE_GPIO_MOCK_ENABLED:false}
 
+i2c:
+  mock:
+    enabled: ${APP_SERVICE_I2C_MOCK_ENABLED:false}
+
 app:
   rabbitmq:
     username: ${APP_SERVICE_RABBITMQ_USERNAME}

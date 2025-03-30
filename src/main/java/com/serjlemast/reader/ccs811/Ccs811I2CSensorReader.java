@@ -24,7 +24,7 @@ public class Ccs811I2CSensorReader {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
-  @Value("${gpio.mock.enabled}")
+  @Value("${i2c.mock.enabled}")
   private boolean mockEnable;
 
   public Optional<Map<String, Number>> read() {
