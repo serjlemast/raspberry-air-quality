@@ -1,20 +1,26 @@
-package com.serjlemast.gpio.dht11;
+package com.serjlemast.reader.dht11;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serjlemast.gpio.SensorReader;
+import com.serjlemast.reader.SensorReader;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
-
 @Slf4j
 @Component
-public class Dht11Gpio17SensorReader implements SensorReader {
+public class Dht11Gpio4SensorReader implements SensorReader {
 
   public static final String TEMPERATURE_CELSIUS_ID = "temperature_celsius";
 
@@ -22,7 +28,7 @@ public class Dht11Gpio17SensorReader implements SensorReader {
 
   public static final String HUMIDITY_ID = "humidity";
 
-  private static final String SCRIPT_NAME = "dht11_gpio17_reader.py";
+  private static final String SCRIPT_NAME = "dht11_reader.py";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -94,7 +100,7 @@ public class Dht11Gpio17SensorReader implements SensorReader {
         throw new FileNotFoundException("Python script not found in resources: " + SCRIPT_NAME);
       }
 
-      File tempScriptFile = File.createTempFile("dht11_gpio17_reader", ".py");
+      File tempScriptFile = File.createTempFile("dht11_reader", ".py");
 
       boolean isWritable = tempScriptFile.setWritable(true);
 

@@ -1,19 +1,18 @@
 package com.serjlemast.service.dth11;
 
-import com.serjlemast.gpio.dht11.Dht11Gpio17SensorReader;
+import static com.serjlemast.reader.dht11.Dht11Gpio17SensorReader.*;
+
 import com.serjlemast.model.sensor.Sensor;
 import com.serjlemast.model.sensor.SensorData;
 import com.serjlemast.model.sensor.SensorType;
+import com.serjlemast.reader.dht11.Dht11Gpio17SensorReader;
 import com.serjlemast.service.SensorService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static com.serjlemast.gpio.dht11.Dht11Gpio17SensorReader.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

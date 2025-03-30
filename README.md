@@ -125,6 +125,40 @@ sudo pip3 install adafruit-circuitpython-dht
 sudo apt-get install libgpiod2
 ```
 
+#### Raspberry Pi: Measure CO2 and TVOC with CCS811
+
+link: [Adafruit CircuitPython CCS811 Library](https://github.com/adafruit/Adafruit_CircuitPython_CCS811/tree/main)
+
+#### Raspberry Pi CO2 Software Installation
+
+First of all, some packages have to be installed:
+
+```
+sudo apt-get update
+sudo apt-get install build-essential python-dev python-openssl git
+```
+
+The library for the sensor can now be installed from PyPI:
+
+```
+sudo pip3 install adafruit-circuitpython-ccs811
+```
+
+To install system-wide (may be required in some cases):
+
+```
+sudo pip3 install adafruit-circuitpython-ccs811
+```
+
+To install in a virtual environment in your current project:
+
+```
+mkdir project-name && cd project-name
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install adafruit-circuitpython-ccs811
+```
+
 #### Creating a Systemd Service
 
 Run the following command to create a new service file:
@@ -175,7 +209,7 @@ sudo systemctl status <serviceName>.service
 Logs
 
 ```
-journalctl -u air-quality.service -n 50 --no-pager
+journalctl -u <serviceName>.service -n 50 --no-pager
 ```
 
 #### Java code style

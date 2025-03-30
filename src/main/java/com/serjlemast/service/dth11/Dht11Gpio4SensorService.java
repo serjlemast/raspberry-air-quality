@@ -1,10 +1,10 @@
 package com.serjlemast.service.dth11;
 
-import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.HUMIDITY_ID;
-import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.TEMPERATURE_CELSIUS_ID;
-import static com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader.TEMPERATURE_FAHRENHEIT_ID;
+import static com.serjlemast.reader.dht11.Dht11Gpio4SensorReader.HUMIDITY_ID;
+import static com.serjlemast.reader.dht11.Dht11Gpio4SensorReader.TEMPERATURE_CELSIUS_ID;
+import static com.serjlemast.reader.dht11.Dht11Gpio4SensorReader.TEMPERATURE_FAHRENHEIT_ID;
 
-import com.serjlemast.gpio.dht11.Dht11Gpio4SensorReader;
+import com.serjlemast.reader.dht11.Dht11Gpio4SensorReader;
 import com.serjlemast.model.sensor.Sensor;
 import com.serjlemast.model.sensor.SensorData;
 import com.serjlemast.model.sensor.SensorType;
