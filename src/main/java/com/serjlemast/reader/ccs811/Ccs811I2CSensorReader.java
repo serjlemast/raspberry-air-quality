@@ -18,8 +18,6 @@ public class Ccs811I2CSensorReader {
 
   public static final String TOTAL_VOLATILE_ORGANIC_COMPOUND_ID = "tvoc";
 
-  public static final String TEMPERATURE_CELSIUS_ID = "temperature_celsius";
-
   private static final String SCRIPT_NAME = "ccs811_i2c_reader.py";
 
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -106,13 +104,10 @@ public class Ccs811I2CSensorReader {
   }
 
   private Map<String, Number> generateMockData() {
-    double tempC = ThreadLocalRandom.current().nextDouble(18, 35);
     int tvoc = ThreadLocalRandom.current().nextInt(0, 600);
     int eco2 = ThreadLocalRandom.current().nextInt(400, 2000);
 
     return Map.of(
-        TEMPERATURE_CELSIUS_ID,
-        Math.round(tempC * 10.0) / 10.0,
         TOTAL_VOLATILE_ORGANIC_COMPOUND_ID,
         tvoc,
         CARBON_DIOXIDE_ID,

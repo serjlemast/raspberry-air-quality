@@ -35,7 +35,7 @@ public class Ccs811I2CSensorService implements SensorService {
    * @return A list of {@link SensorData} objects with the retrieved sensor values.
    */
   private List<SensorData> fetchCcs811SensorData(Map<String, Number> i2cData) {
-    return Stream.of(TEMPERATURE_CELSIUS_ID, TOTAL_VOLATILE_ORGANIC_COMPOUND_ID, CARBON_DIOXIDE_ID)
+    return Stream.of(TOTAL_VOLATILE_ORGANIC_COMPOUND_ID, CARBON_DIOXIDE_ID)
         .map(id -> new SensorData(id, i2cData.get(id)))
         .toList();
   }

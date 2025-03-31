@@ -15,10 +15,8 @@ def read_ccs811_data():
     try:
         eco2 = ccs811.eco2
         tvoc = ccs811.tvoc
-        temperature_c = ccs811.temperature
 
         data = {
-            "temperature_celsius": round(temperature_c, 1),
             "tvoc": tvoc,
             "eco2": eco2
         }
