@@ -1,7 +1,6 @@
 package com.serjlemast.reader.dht11;
 
 import com.serjlemast.reader.SensorReader;
-import java.io.*;
 import java.util.Collections;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;

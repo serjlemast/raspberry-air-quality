@@ -1,7 +1,6 @@
 package com.serjlemast.reader.ccs811;
 
 import com.serjlemast.reader.SensorReader;
-import java.io.*;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
