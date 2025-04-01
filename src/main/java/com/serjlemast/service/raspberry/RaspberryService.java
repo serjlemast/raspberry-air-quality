@@ -43,10 +43,10 @@ public class RaspberryService {
 
   private RaspberryInfo defaultInfo() {
     return new RaspberryInfo(
-        "defaultDeviceId",
-        "boardModel",
-        "operatingSystem",
-        "javaVersions",
+        deviceId,
+        "Pi 4",
+        "Linux OS",
+        "24",
         ThreadLocalRandom.current().nextDouble(128, 256),
         ThreadLocalRandom.current().nextDouble(40.0, 45.00));
   }
