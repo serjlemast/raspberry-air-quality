@@ -15,6 +15,6 @@ def generate_mock_ccs811_data():
     except Exception as error:
         return json.dumps({"error": "Unexpected error: " + str(error)})
 
-if name == "main":
+if __name__ == "__main__":
     result = generate_mock_ccs811_data()
     print(result)
