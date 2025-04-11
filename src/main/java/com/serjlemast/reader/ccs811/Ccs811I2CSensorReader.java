@@ -1,5 +1,6 @@
 package com.serjlemast.reader.ccs811;
 
+import com.serjlemast.reader.SensorReader;
 import com.serjlemast.reader.SensorReaderTest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,14 +12,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class Ccs811I2CSensorReader extends SensorReaderTest {
 
-  @Override
-  protected String getScriptName() {
-    return "ccs811_i2c_reader.py";
-  }
+  private static final String SCRIPT_NAME = "ccs811_i2c_reader.py";
 
   @Override
-  public Map<String, Number> read() {
-    return super.read();
+  protected String getScriptName() {
+    return SCRIPT_NAME;
   }
 
   @Override

@@ -1,17 +1,13 @@
-import json
-import random
-import time
+import socket
 
-def generate_mock_ccs811_data():
-    tvoc = random.randint(0, 600)
-    eco2 = random.randint(400, 2000)
-    return {
-        "tvoc": tvoc,
-        "eco2": eco2
-    }
+HOST = '127.0.0.1'
+PORT = 5001
 
-if __name__ == "__main__":
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    print("Connected to server!")
     while True:
-        data = generate_mock_ccs811_data()
-        print(json.dumps(data), flush=True)
-        time.sleep(2)
+        data = s.recv(1024)
+        if not data:
+            break
+        print("Received:", data.decode().strip())
