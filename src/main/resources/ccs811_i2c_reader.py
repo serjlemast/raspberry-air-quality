@@ -8,7 +8,9 @@ import os
 DEFAULT_HOST = '127.0.0.1'
 DEFAULT_PORT = 5001
 SEND_INTERVAL = 2  # seconds
-CONFIG_FILE = 'application.yaml'
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CONFIG_FILE = os.path.join(SCRIPT_DIR, 'application.yaml')
 
 
 def load_config():
