@@ -23,6 +23,12 @@ gpio:
   mock:
     enabled: ${APP_SERVICE_GPIO_MOCK_ENABLED:false}
 
+sensor:
+  i2c:
+    socket:
+      host: localhost
+      port: 5001
+
 app:
   rabbitmq:
     username: ${APP_SERVICE_RABBITMQ_USERNAME}
