@@ -2,15 +2,13 @@ package com.serjlemast.reader;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
 public abstract class SensorReaderTest {
@@ -26,30 +24,17 @@ public abstract class SensorReaderTest {
   @Value("${gpio.mock.enabled}")
   protected boolean mockEnable;
 
-  private final AtomicReference<Boolean> scriptStarted = new AtomicReference<>(false);
+  private volatile boolean scriptStarted = false;
+
   private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-  public Map<String, Number> read() {
-    if (mockEnable) {
-      return generateMockData();
-    }
+  @Value("${sensor.i2c.socket.host}")
+  private String sensorHost;
 
-    String scriptName = getScriptName();
-    File scriptFile;
+  @Value("${sensor.i2c.socket.port}")
+  private int sensorPort;
 
-    try {
-      scriptFile = extractPythonScript(scriptName, scriptName.replace(".py", ""), ".py");
-    } catch (IOException e) {
-      log.warn("Script file not found: {}", scriptName);
-      return Collections.emptyMap();
-    }
-
-    if (!scriptStarted.get()) {
-      startScriptWithRetry(scriptFile);
-    }
-
-    return readFromSocket();
-  }
+  protected abstract Map<String, Number> read();
 
   protected abstract String getScriptName();
 
@@ -64,18 +49,15 @@ public abstract class SensorReaderTest {
         HUMIDITY_ID, humidity);
   }
 
-  private void startScriptWithRetry(File scriptFile) {
+  protected void startScriptWithRetry(File scriptFile) {
     scheduler.scheduleAtFixedRate(
         () -> {
-          if (!scriptStarted.get() && scriptFile.exists()) {
+          if (!scriptStarted && scriptFile.exists()) {
             try {
-              ProcessBuilder processBuilder =
-                  new ProcessBuilder("python3", scriptFile.getAbsolutePath());
-              processBuilder.start();
-              scriptStarted.set(true);
-              log.info("Python script started: {}", scriptFile.getName());
+              new ProcessBuilder("python3", scriptFile.getAbsolutePath()).start();
+              log.info("Attempted to start Python script: {}", scriptFile.getName());
             } catch (IOException e) {
-              log.warn("Failed to start Python script. Will retry in 1 minute.");
+              log.warn("Failed to start Python script. Will retry in 1 minute.", e);
             }
           }
         },
@@ -84,8 +66,8 @@ public abstract class SensorReaderTest {
         TimeUnit.MINUTES);
   }
 
-  private Map<String, Number> readFromSocket() {
-    try (Socket socket = new Socket("localhost", 5001);
+  protected Map<String, Number> readFromSocket() {
+    try (Socket socket = new Socket(sensorHost, sensorPort);
         BufferedReader reader =
             new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
@@ -95,30 +77,37 @@ public abstract class SensorReaderTest {
       }
 
     } catch (IOException e) {
-      log.warn("Failed to read data from socket", e);
+      log.warn("Failed to read data from socket at {}:{}.", sensorHost, sensorPort, e);
     }
 
     return Collections.emptyMap();
   }
 
-  protected File extractPythonScript(String script, String prefix, String suffix)
+  protected File extractPythonScript(String resourceName, String prefix, String suffix)
       throws IOException {
-    try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(script)) {
-      if (inputStream == null) {
-        throw new FileNotFoundException("Python script not found in resources: " + script);
-      }
+    InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourceName);
+    if (inputStream == null) {
+      throw new FileNotFoundException("Python script not found in resources: " + resourceName);
+    }
 
-      File tempScriptFile = File.createTempFile(prefix, suffix);
-      tempScriptFile.setExecutable(true);
-      try (OutputStream outputStream = new FileOutputStream(tempScriptFile)) {
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = inputStream.read(buffer)) != -1) {
-          outputStream.write(buffer, 0, length);
-        }
-      }
+    File tempScriptFile = File.createTempFile(prefix, suffix);
+    tempScriptFile.setExecutable(true);
 
-      return tempScriptFile;
+    try (inputStream;
+        OutputStream outputStream = new FileOutputStream(tempScriptFile)) {
+      inputStream.transferTo(outputStream);
+    }
+
+    return tempScriptFile;
+  }
+
+  public boolean isScriptRunning() {
+    try (Socket socket = new Socket(sensorHost, sensorPort)) {
+      scriptStarted = true;
+      return true;
+    } catch (IOException e) {
+      scriptStarted = false;
+      return false;
     }
   }
 }
