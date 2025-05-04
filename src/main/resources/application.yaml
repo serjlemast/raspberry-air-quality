@@ -1,0 +1,31 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: raspberry-air-quality
+
+  config:
+    import: optional:file:.env[.properties]
+
+  threads:
+    virtual:
+      enabled: true
+
+scheduled:
+  cron: ${APP_SERVICE_CRONE:*/10 * * * * *}
+
+controller:
+  deviceId: ${APP_SERVICE_DEVICE_ID:"Raspberry.Pi4:001"}
+
+app:
+  rabbitmq:
+    username: ${APP_SERVICE_RABBITMQ_USERNAME}
+    password: ${APP_SERVICE_RABBITMQ_PASSWORD}
+    port: ${APP_SERVICE_RABBITMQ_PORT:5672}
+    host: ${APP_SERVICE_RABBITMQ_HOST:localhost}
+    virtualhost: ${APP_SERVICE_RABBITMQ_VIRTUAL_HOST}
+    queue: ${APP_SERVICE_RABBITMQ_QUEUE:air-quality-queue}
+    queue-ttl: ${APP_SERVICE_RABBITMQ_QUEUE_TTL:6000}
+    exchange: ${APP_SERVICE_RABBITMQ_EXCHANGE:air-quality-exchange}
+    routing-key: ${APP_SERVICE_RABBITMQ_ROUTING_KEY:air-quality-routing-key}
