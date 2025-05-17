@@ -5,6 +5,7 @@ import com.serjlemast.service.collector.SensorDataCollectorService;
 import com.serjlemast.service.raspberry.RaspberryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ public class SchedulerProcessor {
 
   private final SensorDataCollectorService sensorDataCollectorService;
 
+  @Async
   @Scheduled(cron = "${scheduled.cron}")
   public void collectSensorDataJob() {
     try {
